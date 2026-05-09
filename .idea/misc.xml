@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
+      <item index="1" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ModelAttribute" />
+    </list>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/infrastructure/discovery-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/auth-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/bff-service/pom.xml" />
+        <option value="$PROJECT_DIR$/common/common-exceptions/pom.xml" />
+        <option value="$PROJECT_DIR$/infrastructure/gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/job-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/search-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/application-service/pom.xml" />
+        <option value="$PROJECT_DIR$/services/notification-service/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,8 +1,27 @@
+### Environment & Secrets ###
+**/.env
+.env
+
+### Build & Artifacts ###
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
+
+### Docker ###
+docker-compose.override.yml
+docker/data/
+
+### Logs ###
+*.log
+logs/
+
+### Security ###
+*.jks
+*.p12
+*.key
+*.pem
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
