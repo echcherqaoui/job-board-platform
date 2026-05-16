@@ -1,3 +1,48 @@
+server:
+  port: ${GATEWAY_PORT}
+
 spring:
   application:
     name: gateway-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # This triggers the automatic discovery and key fetch
+          issuer-uri: ${JWT_ISSUER_URI}
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+          routes:
+            #  PROTECT INTERNAL ACTUATORS
+            - id: block-internal-actuator
+              uri: no://op
+              predicates:
+                - Path=/*/actuator/**
+              filters:
+                - SetStatus=403
+
+            # USER SERVICE
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/profiles/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: ${LOG_LEVEL_GATEWAY}
