@@ -1,3 +1,96 @@
+server:
+  port: ${BFF_PORT}
+  reactive:
+    session:
+      cookie:
+        name: JOB_BOARD_SESSION
+        http-only: true
+        secure: ${SESSION_SECURE}
+        same-site: lax
 spring:
   application:
     name: bff-service
+  main:
+    web-application-type: reactive
+
+  # ── Redis — stores JWT server-side (BFF pattern) ──────────────
+  data:
+    redis:
+      host: ${RD_HOST}
+      port: ${RD_PORT}
+      password: ${RD_PASSWORD}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          bff-client:
+            provider: spring
+            client-id: ${BFF_CLIENT_ID}
+            client-secret: ${BFF_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: ${BFF_REDIRECT_URI}
+            scope:
+              - openid
+              - profile
+        provider:
+          spring:
+            issuer-uri: ${JWT_ISSUER_URI}
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - SaveSession
+            - TokenRelay # Pass the JWT to downstream services
+
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            corsConfigurations:
+              '[/**]':
+                allowedOrigins: "${FRONTEND_URL}"
+                allowedMethods: [GET, POST, PUT, DELETE, OPTIONS]
+                allowedHeaders: ["Content-Type", "Accept", "X-Requested-With"]
+                allowCredentials: true
+                maxAge: 3600
+
+          routes:
+            - id: gateway-service
+              uri: lb://gateway-service
+              predicates:
+                - Path=/api/**
+
+  # Session Management
+  session:
+    timeout: 30m
+    store-type: redis
+    redis:
+      flush-mode: on_save
+      namespace: "spring:session:bff"
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
+# Logging
+logging:
+  level:
+    org.springframework.security: ${LOG_LEVEL_SECURITY}
+    org.springframework.session: INFO
+    org.springframework.cloud.gateway: ${LOG_LEVEL_GATEWAY}
+
+management:
+  server:
+    port: ${MANAGEMENT_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+bff:
+  post-logout-redirect-uri: "{baseUrl}/login"
