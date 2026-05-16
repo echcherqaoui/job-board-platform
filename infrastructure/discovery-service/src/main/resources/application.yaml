@@ -9,3 +9,11 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
+
+management:
+  server:
+    port: ${MANAGEMENT_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health, info
