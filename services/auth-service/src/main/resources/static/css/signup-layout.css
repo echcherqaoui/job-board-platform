@@ -1,0 +1,111 @@
+/* Expand container and card for a landscape layout */
+.login-container {
+    max-width: 680px;
+}
+
+.login-card {
+    padding: 40px;
+}
+
+/* Row wrapper for two-column inputs */
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Forces standard height and right padding on the select element */
+.input-wrapper select.select-field {
+    width: 100%;
+    height: 48px;
+    padding: 0 40px 0 16px;
+    font-size: 15px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: var(--white);
+    color: var(--text-primary);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.input-wrapper select.select-field:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Specific select wrapper styling to isolate relative positioning */
+.input-wrapper.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Positions arrow exactly on the right and centers vertically */
+.select-arrow {
+    position: absolute !important;
+    right: 16px !important;
+    left: auto !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 18px !important;
+    height: 18px !important;
+    color: var(--text-secondary);
+    pointer-events: none;
+    display: block !important;
+}
+
+/* Styling for validation error messages */
+.error-text {
+    display: flex;
+    align-items: center;
+    color: #ef4444; /* Standard Tailwind/Modern Red */
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 6px;
+    line-height: 1.4;
+    animation: fadeInError 0.2s ease-in-out;
+}
+
+.error-text::before {
+    content: "!";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 50%;
+    margin-right: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #ef4444;
+}
+
+/* Smooth entry animation */
+@keyframes fadeInError {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive fallback for mobile devices */
+@media (max-width: 640px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

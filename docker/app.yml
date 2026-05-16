@@ -1,0 +1,190 @@
+services:
+  # ─── Infrastructure ───────────────────────────────────────────
+  discovery-service:
+    build:
+      context: ../infrastructure/discovery-service
+    container_name: discovery-service-job-board
+    ports:
+      - "${DISCOVERY_PORT}:${DISCOVERY_PORT}"
+    environment:
+      DISCOVERY_PORT: ${DISCOVERY_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+    networks:
+      - job-board-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:${MANAGEMENT_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  gateway-service:
+    build:
+      context: ../infrastructure/gateway-service
+    container_name: gateway-service-job-board
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
+    environment:
+      GATEWAY_PORT: ${GATEWAY_PORT}
+      # Spring Cloud Gateway
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Security (Resource Server)
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+
+      # Management & Logging
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+      LOG_LEVEL_GATEWAY: ${LOG_LEVEL_GATEWAY}
+
+    depends_on:
+      discovery-service:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
+  # ─── Services ───────────────────────────────────────────
+  auth-service:
+    build:
+      context: ../services/auth-service
+    container_name: auth-service-job-board
+    ports:
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
+    environment:
+      # Server & Discovery
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Database
+      DATASOURCE_URL: jdbc:postgresql://${PH_HOST}:${PG_PORT}/${AUTH_DB}
+      DATASOURCE_USERNAME: ${PG_USER}
+      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+
+      # OAuth2 / Auth Server Config
+      BFF_CLIENT_ID: ${BFF_CLIENT_ID}
+      BFF_CLIENT_SECRET: ${BFF_CLIENT_SECRET}
+      BFF_REDIRECT_URI: ${BFF_REDIRECT_URI}
+      POST_LOGOUT_REDIRECT_URI: ${POST_LOGOUT_REDIRECT_URI}
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+
+      # Security Keys (JKS)
+      KEYSTORE_PATH: ${KEYSTORE_PATH}
+      KEYSTORE_PASSWORD: ${KEYSTORE_PASSWORD}
+      KEY_ALIAS: ${KEY_ALIAS}
+
+      # Token Settings
+      ACCESS_TOKEN_TTL: ${ACCESS_TOKEN_TTL}
+      REFRESH_TOKEN_TTL: ${REFRESH_TOKEN_TTL}
+      REQUIRE_CONSENT: ${REQUIRE_CONSENT}
+      REQUIRE_PKCE: ${REQUIRE_PKCE}
+
+      # Logging
+      LOG_LEVEL_SECURITY: ${LOG_LEVEL_SECURITY}
+      LOG_LEVEL_OAUTH2: ${LOG_LEVEL_OAUTH2}
+
+    volumes:
+      # Mount the folder containing the .jks file so the app can read it
+      - ../services/auth-service/src/main/resources/job-board.jks:/app/config/job-board.jks
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+
+    networks:
+      - job-board-net
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:${MANAGEMENT_PORT}/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  bff-service:
+    build:
+      context: ../services/bff-service
+    container_name: bff-service-job-board
+    ports:
+      - "${BFF_PORT}:${BFF_PORT}"
+      - "${MANAGEMENT_PORT}:${MANAGEMENT_PORT}"
+    environment:
+      # Server & Discovery
+      BFF_PORT: ${BFF_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Redis (Session Management)
+      RD_HOST: ${RD_HOST}
+      RD_PORT: ${RD_PORT}
+      RD_PASSWORD: ${RD_PASSWORD}
+
+      # OAuth2 Client Config (BFF Role)
+      BFF_CLIENT_ID: ${BFF_CLIENT_ID}
+      BFF_CLIENT_SECRET: ${BFF_CLIENT_SECRET}
+      BFF_REDIRECT_URI: ${BFF_REDIRECT_URI}
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      SESSION_SECURE: ${SESSION_SECURE}
+
+      # Downstream Routing
+      GATEWAY_URL: ${GATEWAY_SERVICE_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
+
+      # Logging
+      LOG_LEVEL_SECURITY: ${LOG_LEVEL_SECURITY}
+      LOG_LEVEL_GATEWAY: ${LOG_LEVEL_GATEWAY}
+
+    depends_on:
+      redis:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
+  user-service:
+    build:
+      context: ../services/user-service
+      dockerfile: Dockerfile
+    container_name: user-service-job-board
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    environment:
+      USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+
+      # Database Connection
+      # Database
+      DATASOURCE_URL: jdbc:postgresql://${PH_HOST}:${PG_PORT}/${USER_DB}
+      DATASOURCE_USERNAME: ${PG_USER}
+      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+
+      # Discovery
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Security
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+
+      # Actuator / Management
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+    networks:
+      - job-board-net
+    restart: unless-stopped

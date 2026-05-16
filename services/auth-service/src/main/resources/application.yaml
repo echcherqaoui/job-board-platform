@@ -1,3 +1,58 @@
+server:
+  port: ${AUTH_SERVICE_PORT}
+
 spring:
   application:
     name: auth-service
+
+  datasource:
+    hikari:
+      pool-name: HikariPool-auth
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
+logging:
+  level:
+    org.springframework.security: ${LOG_LEVEL_SECURITY}
+    org.springframework.security.oauth2: ${LOG_LEVEL_OAUTH2:TRACE}
+
+management:
+  server:
+    port: ${MANAGEMENT_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+
+auth:
+  server:
+    client-id: ${BFF_CLIENT_ID}
+    client-secret: ${BFF_CLIENT_SECRET}
+    redirect-uri: ${BFF_REDIRECT_URI}
+    post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
+    issuer-uri: ${JWT_ISSUER_URI}
+    keystore-path: ${KEYSTORE_PATH}
+    keystore-password: ${KEYSTORE_PASSWORD}
+    key-alias: ${KEY_ALIAS}
+    access-token-ttl: ${ACCESS_TOKEN_TTL:30m}
+    refresh-token-ttl: ${REFRESH_TOKEN_TTL:7d}
+    require-consent: ${REQUIRE_CONSENT:true}
+    require-pkce: ${REQUIRE_PKCE:true}

@@ -19,6 +19,7 @@
 
     <modules>
         <module>common/common-exceptions</module>
+        <module>common/common-security</module>
         <module>common/grpc-contracts</module>
         <module>infrastructure/discovery-service</module>
         <module>infrastructure/gateway-service</module>
@@ -34,6 +35,8 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2025.0.2</spring-cloud.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
         <protobuf.version>3.25.5</protobuf.version>
         <grpc.version>1.61.1</grpc.version>
@@ -74,6 +77,19 @@
                 <groupId>com.echcherqaoui.jobboard</groupId>
                 <artifactId>common-exceptions</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.echcherqaoui.jobboard</groupId>
+                <artifactId>common-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- MapStruct -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
 
             <!-- gRPC & Protobuf -->
@@ -136,9 +152,23 @@
                 <configuration>
                     <release>${java.version}</release>
                     <annotationProcessorPaths>
+                        <!-- Lombok MUST come first -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <!-- MapStruct comes second, sees Lombok output -->
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <!-- Binding for Lombok + MapStruct integration -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${lombok-mapstruct-binding.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
