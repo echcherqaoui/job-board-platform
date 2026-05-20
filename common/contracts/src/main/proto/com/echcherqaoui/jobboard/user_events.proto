@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.echcherqaoui.jobboard;
+
+option java_package = "com.echcherqaoui.jobboard.event";
+option java_outer_classname = "UserEventsProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+message UserCreatedEvent {
+  string event_id = 1;
+  string user_id = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string email = 5;
+  string signature = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+}

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ═══════════════════════════════════════════════════════════
+      Parent POM - Inherits common configuration
+  ════════════════════════════════════════════════════════════════ -->
+    <parent>
+        <groupId>com.echcherqaoui.jobboard</groupId>
+        <artifactId>job-board-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <!-- ═══════════════════════════════════════════════════════════
+        Project Metadata
+    ════════════════════════════════════════════════════════════════ -->
+    <artifactId>contracts</artifactId>
+    <packaging>jar</packaging>
+    <name>contracts</name>
+    <description>Protobuf event contracts shared across all services</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-protobuf-serializer</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       Build Configuration
+   ════════════════════════════════════════════════════════════════ -->
+    <build>
+        <extensions>
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>${os-plugin.version}</version>
+            </extension>
+        </extensions>
+
+        <plugins>
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compile-custom</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>register-schemas</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.confluent</groupId>
+                        <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+                        <version>${kafka-protobuf-serializer.version}</version>
+                        <configuration>
+                            <schemaRegistryUrls>
+                                <schemaRegistryUrl>${schema.registry.url}</schemaRegistryUrl>
+                            </schemaRegistryUrls>
+                            <messagePath>src/main/proto</messagePath>
+                            <subjects>
+                                <com.echcherqaoui.jobboard.UserCreatedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/user_events.proto
+                                </com.echcherqaoui.jobboard.UserCreatedEvent>
+                            </subjects>
+
+                            <schemaTypes>
+                                <com.echcherqaoui.jobboard.UserCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.UserCreatedEvent>
+                            </schemaTypes>
+
+                            <compatibilityLevels>
+                                <com.echcherqaoui.jobboard.UserCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.UserCreatedEvent>
+                            </compatibilityLevels>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
