@@ -12,7 +12,7 @@ services:
     networks:
       - job-board-net
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:${MANAGEMENT_PORT}/actuator/health"]
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:${MANAGEMENT_PORT}/actuator/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -26,15 +26,17 @@ services:
     ports:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}"
     environment:
+      # Server
       GATEWAY_PORT: ${GATEWAY_PORT}
-      # Spring Cloud Gateway
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      # Discovery
       DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
 
       # Security (Resource Server)
       JWT_ISSUER_URI: ${JWT_ISSUER_URI}
 
-      # Management & Logging
-      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+      #Logging
       LOG_LEVEL_GATEWAY: ${LOG_LEVEL_GATEWAY}
 
     depends_on:
@@ -55,13 +57,15 @@ services:
     ports:
       - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     environment:
-      # Server & Discovery
+      # Server
       AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
       MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      #Discovery
       DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
 
       # Database
-      DATASOURCE_URL: jdbc:postgresql://${PH_HOST}:${PG_PORT}/${AUTH_DB}
+      DATASOURCE_URL: jdbc:postgresql://${PG_HOST}:${PG_PORT}/${AUTH_DB}
       DATASOURCE_USERNAME: ${PG_USER}
       DATASOURCE_PASSWORD: ${PG_PASSWORD}
 
@@ -72,16 +76,21 @@ services:
       POST_LOGOUT_REDIRECT_URI: ${POST_LOGOUT_REDIRECT_URI}
       JWT_ISSUER_URI: ${JWT_ISSUER_URI}
 
-      # Security Keys (JKS)
-      KEYSTORE_PATH: ${KEYSTORE_PATH}
-      KEYSTORE_PASSWORD: ${KEYSTORE_PASSWORD}
-      KEY_ALIAS: ${KEY_ALIAS}
-
       # Token Settings
       ACCESS_TOKEN_TTL: ${ACCESS_TOKEN_TTL}
       REFRESH_TOKEN_TTL: ${REFRESH_TOKEN_TTL}
       REQUIRE_CONSENT: ${REQUIRE_CONSENT}
       REQUIRE_PKCE: ${REQUIRE_PKCE}
+
+      # Security Keys
+      KEYSTORE_PATH: ${KEYSTORE_PATH}
+      KEYSTORE_PASSWORD: ${KEYSTORE_PASSWORD}
+      KEY_ALIAS: ${KEY_ALIAS}
+      HMAC_SECRET_KEY: ${SECRET_KEY}
+
+      #Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
 
       # Logging
       LOG_LEVEL_SECURITY: ${LOG_LEVEL_SECURITY}
@@ -115,9 +124,11 @@ services:
       - "${BFF_PORT}:${BFF_PORT}"
       - "${MANAGEMENT_PORT}:${MANAGEMENT_PORT}"
     environment:
-      # Server & Discovery
+      # Server
       BFF_PORT: ${BFF_PORT}
       MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      #Discovery
       DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
 
       # Redis (Session Management)
@@ -132,7 +143,7 @@ services:
       JWT_ISSUER_URI: ${JWT_ISSUER_URI}
       SESSION_SECURE: ${SESSION_SECURE}
 
-      # Downstream Routing
+      # Routing
       GATEWAY_URL: ${GATEWAY_SERVICE_URL}
       FRONTEND_URL: ${FRONTEND_URL}
 
@@ -160,22 +171,26 @@ services:
     ports:
       - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
     environment:
+      # Server
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
-
-      # Database Connection
-      # Database
-      DATASOURCE_URL: jdbc:postgresql://${PH_HOST}:${PG_PORT}/${USER_DB}
-      DATASOURCE_USERNAME: ${PG_USER}
-      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
 
       # Discovery
       DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
 
+      # Database
+      DATASOURCE_URL: jdbc:postgresql://${PG_HOST}:${PG_PORT}/${USER_DB}
+      DATASOURCE_USERNAME: ${PG_USER}
+      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+
       # Security
       JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      HMAC_SECRET_KEY: ${SECRET_KEY}
 
-      # Actuator / Management
-      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+      # Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
+      KF_CONSUMER_GROUP_ID: ${KF_USER_CONSUMER_GROUP_ID}
 
     depends_on:
       postgres:

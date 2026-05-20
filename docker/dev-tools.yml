@@ -16,5 +16,26 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:${KF_UI_VERSION}
+    container_name: kafka-ui-job-board
+    ports:
+      - "${KF_UI_PORT}:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: JobBoardCluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-0:${KF_INTERNAL_PORT}
+      DYNAMIC_CONFIG_ENABLED: true
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "connect"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: ${KF_CONNECT_URL}
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: ${SC_REGISTRY_URL}
+      KAFKA_CLUSTERS_0_PROPERTIES_VALUE_SUBJECT_NAME_STRATEGY: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      AUTH_TYPE: DISABLED
+    networks:
+      - job-board-net
+    depends_on:
+      kafka-0:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   pgadmin_data:

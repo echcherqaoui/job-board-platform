@@ -6,6 +6,7 @@ import com.echcherqaoui.jobboard.authservice.exception.UserAlreadyExistsExceptio
 import com.echcherqaoui.jobboard.authservice.mapper.UserMapper;
 import com.echcherqaoui.jobboard.authservice.model.AppUser;
 import com.echcherqaoui.jobboard.authservice.repository.UserRepository;
+import com.echcherqaoui.jobboard.authservice.service.OutboxService;
 import com.echcherqaoui.jobboard.authservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final OutboxService outboxService;
 
     @Transactional
     @Override
@@ -40,5 +42,10 @@ public class UserServiceImpl implements UserService {
               .setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
+
+        if (request.getRole().equals("CANDIDATE"))
+            outboxService.publishJobSeekerCreated(user);
+        else if (request.getRole().equals("RECRUITER"))
+            outboxService.publishRecruiterCreated(user);
     }
 }

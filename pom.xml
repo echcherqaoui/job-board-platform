@@ -19,7 +19,9 @@
 
     <modules>
         <module>common/common-exceptions</module>
+        <module>common/common-outbox</module>
         <module>common/common-security</module>
+        <module>common/contracts</module>
         <module>common/grpc-contracts</module>
         <module>infrastructure/discovery-service</module>
         <module>infrastructure/gateway-service</module>
@@ -39,12 +41,33 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
         <protobuf.version>3.25.5</protobuf.version>
-        <grpc.version>1.61.1</grpc.version>
+        <grpc.version>1.76.2</grpc.version>
+        <kafka-protobuf-serializer.version>7.7.7</kafka-protobuf-serializer.version>
         <cloudinary.version>2.3.2</cloudinary.version>
         <javax.version>1.3.2</javax.version>
+        <wire-runtime-jvm.version>5.2.0</wire-runtime-jvm.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <bcprov.version>1.84</bcprov.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <os-plugin.version>1.7.1</os-plugin.version>
+        <schema.registry.url>http://localhost:8181</schema.registry.url>
     </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
 
     <!-- ═══════════════════════════════════════════════════════════
          COMMON DEPENDENCIES
@@ -63,6 +86,15 @@
      ════════════════════════════════════════════════════════════════ -->
     <dependencyManagement>
         <dependencies>
+            <!-- gRPC BOM — strictly aligns all gRPC core + shaded components safely -->
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${grpc.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- Spring Cloud BOM — resolves versions for spring-cloud-* deps -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -81,7 +113,19 @@
 
             <dependency>
                 <groupId>com.echcherqaoui.jobboard</groupId>
+                <artifactId>common-outbox</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.echcherqaoui.jobboard</groupId>
                 <artifactId>common-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.echcherqaoui.jobboard</groupId>
+                <artifactId>contracts</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -111,16 +155,11 @@
                 <version>${protobuf.version}</version>
             </dependency>
 
+            <!-- Confluent Kafka Protobuf Serializer / Deserializer -->
             <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-stub</artifactId>
-                <version>${grpc.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.grpc</groupId>
-                <artifactId>grpc-protobuf</artifactId>
-                <version>${grpc.version}</version>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-protobuf-serializer</artifactId>
+                <version>${kafka-protobuf-serializer.version}</version>
             </dependency>
 
             <!-- Cloudinary -->
@@ -135,6 +174,34 @@
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
                 <version>${javax.version}</version>
+            </dependency>
+
+            <!-- Fixes CVE-2024-58103 -->
+            <dependency>
+                <groupId>com.squareup.wire</groupId>
+                <artifactId>wire-runtime-jvm</artifactId>
+                <version>${wire-runtime-jvm.version}</version>
+            </dependency>
+
+            <!-- Fixes CVE-2025-48924 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <!-- Fix BouncyCastle CVE-2026-0636 -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov.version}</version>
+            </dependency>
+
+            <!-- Fix CVE-2020-13956 -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

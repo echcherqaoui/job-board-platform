@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="2">
-      <item index="0" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
-      <item index="1" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ModelAttribute" />
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="org.springframework.context.annotation.Import" />
+      <item index="1" class="java.lang.String" itemvalue="org.springframework.kafka.annotation.KafkaListener" />
+      <item index="2" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
+      <item index="3" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ModelAttribute" />
     </list>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
@@ -23,6 +25,8 @@
         <option value="$PROJECT_DIR$/services/application-service/pom.xml" />
         <option value="$PROJECT_DIR$/services/notification-service/pom.xml" />
         <option value="$PROJECT_DIR$/common/common-security/pom.xml" />
+        <option value="$PROJECT_DIR$/common/contracts/pom.xml" />
+        <option value="$PROJECT_DIR$/common/common-outbox/pom.xml" />
       </list>
     </option>
   </component>

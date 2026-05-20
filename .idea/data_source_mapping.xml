@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/services/user-service/src/main/resources/db/migration/V1__init_user_service.sql" value="b8f8b903-bd6e-4290-aced-a4402847c059" />
+    <file url="file://$PROJECT_DIR$/services/user-service/src/main/resources/db/migration/V2__add_recruiter_profiles.sql" value="b8f8b903-bd6e-4290-aced-a4402847c059" />
+  </component>
+</project>

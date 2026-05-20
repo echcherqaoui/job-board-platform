@@ -56,3 +56,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Ignore the local Terraform directory
+.terraform/
+
+#terraform
+*.tfstate
+*.tfstate.backup

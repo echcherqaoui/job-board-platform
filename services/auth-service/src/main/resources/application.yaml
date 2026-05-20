@@ -1,6 +1,14 @@
 server:
   port: ${AUTH_SERVICE_PORT}
 
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
 spring:
   application:
     name: auth-service
@@ -18,15 +26,22 @@ spring:
 
   flyway:
     enabled: true
-    locations: classpath:db/migration
+    locations:
+      - classpath:db/migration
+    placeholders:
+      outbox_publication_name: auth_outbox_publication
 
-eureka:
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
-    service-url:
-      defaultZone: ${DISCOVERY_SERVICE_URL}
+  kafka:
+    bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+    properties:
+      schema.registry.url: ${SC_REGISTRY_URL}
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
 
 logging:
   level:
@@ -40,7 +55,6 @@ management:
     web:
       exposure:
         include: health, info
-
 
 auth:
   server:
@@ -56,3 +70,8 @@ auth:
     refresh-token-ttl: ${REFRESH_TOKEN_TTL:7d}
     require-consent: ${REQUIRE_CONSENT:true}
     require-pkce: ${REQUIRE_PKCE:true}
+
+app:
+  security:
+    hmac:
+      secret: ${HMAC_SECRET_KEY}

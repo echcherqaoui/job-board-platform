@@ -1,0 +1,17 @@
+services:
+  terraform:
+    image: hashicorp/terraform:${TERRAFORM_VERSION}
+    container_name: tf-kafka-manager
+    environment:
+      TF_VAR_kafka_broker: kafka-0:${KF_INTERNAL_PORT}
+    volumes:
+      - ../terraform:/workspace
+    working_dir: /workspace
+    networks:
+      - job-board-net
+    entrypoint: [ "terraform" ]
+    command: ["init"]
+
+networks:
+  job-board-net:
+    external: true
