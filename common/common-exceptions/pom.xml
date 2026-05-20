@@ -3,6 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- ═══════════════════════════════════════════════════════════
+        Parent POM - Inherits common configuration
+    ════════════════════════════════════════════════════════════════ -->
     <parent>
         <groupId>com.echcherqaoui.jobboard</groupId>
         <artifactId>job-board-parent</artifactId>
@@ -10,11 +13,17 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <!-- ═══════════════════════════════════════════════════════════
+        Project Metadata
+    ════════════════════════════════════════════════════════════════ -->
     <artifactId>common-exceptions</artifactId>
     <packaging>jar</packaging>
     <name>common-exceptions</name>
     <description>Shared exception hierarchy, error codes contract, and global handler</description>
 
+    <!-- ═══════════════════════════════════════════════════════════
+        DEPENDENCIES
+    ════════════════════════════════════════════════════════════════ -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
