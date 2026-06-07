@@ -23,6 +23,7 @@
         <module>common/common-security</module>
         <module>common/contracts</module>
         <module>common/grpc-contracts</module>
+        <module>common/shared-utils</module>
         <module>infrastructure/discovery-service</module>
         <module>infrastructure/gateway-service</module>
         <module>services/application-service</module>
@@ -126,6 +127,18 @@
             <dependency>
                 <groupId>com.echcherqaoui.jobboard</groupId>
                 <artifactId>contracts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.echcherqaoui.jobboard</groupId>
+                <artifactId>grpc-contracts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.echcherqaoui.jobboard</groupId>
+                <artifactId>shared-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -263,9 +276,11 @@
                     <artifactId>protobuf-maven-plugin</artifactId>
                     <version>${protobuf-maven-plugin.version}</version>
                     <configuration>
+                        <!-- Compiler for Protobuf messages -->
                         <protocArtifact>
                             com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
                         </protocArtifact>
+                        <!-- Plugin for gRPC service generation -->
                         <pluginId>grpc-java</pluginId>
                         <pluginArtifact>
                             io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}

@@ -8,12 +8,15 @@ import com.echcherqaoui.jobboard.userservice.exception.ProfileNotFoundException;
 import com.echcherqaoui.jobboard.userservice.mapper.RecruiterProfileMapper;
 import com.echcherqaoui.jobboard.userservice.model.RecruiterProfile;
 import com.echcherqaoui.jobboard.userservice.repository.RecruiterProfileRepository;
+import com.echcherqaoui.jobboard.userservice.service.CompanyOutboxService;
 import com.echcherqaoui.jobboard.userservice.service.RecruiterProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.RECRUITER_NOT_EXISTS;
@@ -24,9 +27,11 @@ import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCod
 public class RecruiterProfileServiceImpl implements RecruiterProfileService {
 
     private final RecruiterProfileRepository recruiterProfileRepository;
+    private final CompanyOutboxService companyOutboxService;
     private final RecruiterProfileMapper mapper;
     private final JwtContextHolder jwtContextHolder;
 
+    @NonNull
     private RecruiterProfileResponse getById(UUID id) {
         return recruiterProfileRepository.findById(id)
               .map(mapper::toResponse)
@@ -68,7 +73,9 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
         mapper.updateEntity(request, profile);
         profile.setOnboardingCompleted(true);
 
-        recruiterProfileRepository.save(profile);
+        RecruiterProfile saved = recruiterProfileRepository.save(profile);
+
+        companyOutboxService.publishCompanyCreated(saved);
 
         log.info("Successfully completed onboarding for recruiter user {}", userId);
     }
@@ -81,15 +88,21 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
 
     @Transactional
     @Override
-    public RecruiterProfileResponse update(RecruiterProfileRequest request) {
+    public RecruiterProfileResponse update(@NonNull RecruiterProfileRequest request) {
         UUID userId = jwtContextHolder.getUserId();
 
         RecruiterProfile profile = recruiterProfileRepository.findById(userId)
               .orElseThrow(() -> new ProfileNotFoundException(RECRUITER_NOT_EXISTS, userId));
 
+        boolean companyChanged = !Objects.equals(profile.getCompanyName(), request.companyName())
+              || !Objects.equals(profile.getCompanyLogoUrl(), request.companyLogoUrl());
+
         mapper.updateEntity(request, profile);
 
         RecruiterProfile saved = recruiterProfileRepository.save(profile);
+
+        if (companyChanged)
+            companyOutboxService.publishCompanyUpdated(saved);
 
         log.info("Updated recruiter profile {}", userId);
 
@@ -98,8 +111,15 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
 
     @Transactional(readOnly = true)
     @Override
+    public RecruiterProfile getProfileEntityById(UUID id) {
+        return recruiterProfileRepository.findById(id)
+              .orElseThrow(() -> new ProfileNotFoundException(RECRUITER_NOT_EXISTS, id));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public RecruiterProfileResponse getRecruiterById(UUID id) {
-        return  getById(id);
+        return getById(id);
     }
 
 }

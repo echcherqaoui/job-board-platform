@@ -168,11 +168,10 @@ services:
       context: ../services/user-service
       dockerfile: Dockerfile
     container_name: user-service-job-board
-    ports:
-      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
     environment:
       # Server
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      USER_SERVICE_GRPC_PORT: ${USER_SERVICE_GRPC_PORT}
       MANAGEMENT_PORT: ${MANAGEMENT_PORT}
 
       # Discovery
@@ -191,6 +190,45 @@ services:
       KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
       SC_REGISTRY_URL: ${SC_REGISTRY_URL}
       KF_CONSUMER_GROUP_ID: ${KF_USER_CONSUMER_GROUP_ID}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
+  job-service:
+    build:
+      context: ../services/job-service
+      dockerfile: Dockerfile
+    container_name: job-service-job-board
+    environment:
+      # Server
+      JOB_SERVICE_PORT: ${JOB_SERVICE_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      # Discovery
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Database
+      DATASOURCE_URL: jdbc:postgresql://${PG_HOST}:${PG_PORT}/${JOB_DB}
+      DATASOURCE_USERNAME: ${PG_USER}
+      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+
+      # Security
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      HMAC_SECRET_KEY: ${SECRET_KEY}
+
+      # Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
+      KF_CONSUMER_GROUP_ID: ${KF_JOB_CONSUMER_GROUP_ID}
 
     depends_on:
       postgres:

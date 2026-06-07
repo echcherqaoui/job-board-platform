@@ -29,9 +29,9 @@ public class KafkaRetryConfig {
               DataIntegrityViolationException.class,
               DeserializationException.class
         );
+
         return errorHandler;
     }
-
 
     @Bean
     public DefaultErrorHandler errorHandler(DeadLetterPublishingRecoverer recoverer) {

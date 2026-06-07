@@ -1,4 +1,4 @@
-package com.echcherqaoui.jobboard.userservice.service.impl;
+package com.echcherqaoui.jobboard.userservice.event;
 
 import com.echcherqaoui.jobboard.event.UserCreatedEvent;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
@@ -8,6 +8,7 @@ import com.echcherqaoui.jobboard.userservice.service.RecruiterProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class UserRegistrationConsumer {
     private final JobSeekerProfileService jobSeekerService;
     private final RecruiterProfileService recruiterService;
 
-    private void validateEvent(UserCreatedEvent event) {
+    private void validateEvent(@NonNull UserCreatedEvent event) {
         boolean valid = signatureService.verify(
               event.getEventId(),
               event.getUserId(),

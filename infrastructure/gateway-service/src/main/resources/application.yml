@@ -34,6 +34,12 @@ spring:
               predicates:
                 - Path=/api/v1/profiles/**
 
+            # JOB SERVICE
+            - id: job-service
+              uri: lb://job-service
+              predicates:
+                - Path=/api/v1/jobs/**
+
 eureka:
   instance:
     prefer-ip-address: true

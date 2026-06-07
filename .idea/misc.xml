@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="EntryPointsManager">
-    <list size="4">
-      <item index="0" class="java.lang.String" itemvalue="org.springframework.context.annotation.Import" />
-      <item index="1" class="java.lang.String" itemvalue="org.springframework.kafka.annotation.KafkaListener" />
-      <item index="2" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
-      <item index="3" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ModelAttribute" />
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="com.fasterxml.jackson.annotation.JsonAutoDetect" />
+      <item index="1" class="java.lang.String" itemvalue="net.devh.boot.grpc.server.advice.GrpcExceptionHandler" />
+      <item index="2" class="java.lang.String" itemvalue="org.springframework.context.annotation.Import" />
+      <item index="3" class="java.lang.String" itemvalue="org.springframework.kafka.annotation.KafkaListener" />
+      <item index="4" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
+      <item index="5" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ModelAttribute" />
     </list>
+    <writeAnnotations>
+      <writeAnnotation name="net.devh.boot.grpc.client.inject.GrpcClient" />
+    </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
@@ -27,6 +32,7 @@
         <option value="$PROJECT_DIR$/common/common-security/pom.xml" />
         <option value="$PROJECT_DIR$/common/contracts/pom.xml" />
         <option value="$PROJECT_DIR$/common/common-outbox/pom.xml" />
+        <option value="$PROJECT_DIR$/common/shared-utils/pom.xml" />
       </list>
     </option>
   </component>
