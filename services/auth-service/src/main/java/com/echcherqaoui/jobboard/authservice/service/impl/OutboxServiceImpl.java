@@ -6,9 +6,11 @@ import com.echcherqaoui.jobboard.commonoutbox.model.OutboxEvent;
 import com.echcherqaoui.jobboard.commonoutbox.repository.OutboxEventRepository;
 import com.echcherqaoui.jobboard.event.UserCreatedEvent;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
+import com.echcherqaoui.jobboard.util.InstantConverter;
 import com.google.protobuf.Message;
-import com.google.protobuf.util.Timestamps;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer;
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -16,6 +18,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class OutboxServiceImpl implements OutboxService {
 
     private final OutboxEventRepository outboxEventRepository;
@@ -31,19 +34,11 @@ public class OutboxServiceImpl implements OutboxService {
     // while making the intent explicit — Debezium handles routing via event_type, not this value.
     private static final String SERIALIZATION_CONTEXT = "outbox-serialization-context";
 
-    public OutboxServiceImpl(OutboxEventRepository outboxEventRepository,
-                             KafkaProtobufSerializer<Message> serializer,
-                             SignatureService signatureService) {
-        this.outboxEventRepository = outboxEventRepository;
-        this.serializer = serializer;
-        this.signatureService = signatureService;
-    }
-
     /**
      * Serializes the user signup data into a Protobuf payload and pushes it to the outbox table.
      * Must be executed within the same database transaction as the user registration save.
      */
-    private void publishUserCreated(AppUser user,
+    private void publishUserCreated(@NonNull AppUser user,
                                     String eventType) {
         Instant now = Instant.now();
 
@@ -64,7 +59,7 @@ public class OutboxServiceImpl implements OutboxService {
               .setLastName(user.getLastName())
               .setEmail(user.getEmail())
               .setSignature(signature)
-              .setOccurredAt(Timestamps.fromMillis(now.toEpochMilli()))
+              .setOccurredAt(InstantConverter.toTimestamp(now))
               .build();
 
         // Serialize to Schema Registry wire format: [0x00][schema_id][protobuf bytes]

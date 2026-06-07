@@ -53,7 +53,6 @@
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                            <goal>compile-custom</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -79,14 +78,50 @@
                                 <com.echcherqaoui.jobboard.UserCreatedEvent>
                                     src/main/proto/com/echcherqaoui/jobboard/user_events.proto
                                 </com.echcherqaoui.jobboard.UserCreatedEvent>
+
+                                <com.echcherqaoui.jobboard.CompanyCreatedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/company_created_event.proto
+                                </com.echcherqaoui.jobboard.CompanyCreatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/company_updated_event.proto
+                                </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyDeletedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/company_deleted_event.proto
+                                </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+
+                                <com.echcherqaoui.jobboard.JobEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/job_event.proto
+                                </com.echcherqaoui.jobboard.JobEvent>
+                                <com.echcherqaoui.jobboard.JobStatusChangedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/job_status_changed_event.proto
+                                </com.echcherqaoui.jobboard.JobStatusChangedEvent>
+                                <com.echcherqaoui.jobboard.JobDeletedEvent>
+                                    src/main/proto/com/echcherqaoui/jobboard/job_deleted_event.proto
+                                </com.echcherqaoui.jobboard.JobDeletedEvent>
                             </subjects>
 
                             <schemaTypes>
                                 <com.echcherqaoui.jobboard.UserCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.UserCreatedEvent>
+
+                                <com.echcherqaoui.jobboard.CompanyCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyCreatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyDeletedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+
+                                <com.echcherqaoui.jobboard.JobEvent> PROTOBUF </com.echcherqaoui.jobboard.JobEvent>
+                                <com.echcherqaoui.jobboard.JobStatusChangedEvent> PROTOBUF </com.echcherqaoui.jobboard.JobStatusChangedEvent>
+                                <com.echcherqaoui.jobboard.JobDeletedEvent> PROTOBUF </com.echcherqaoui.jobboard.JobDeletedEvent>
                             </schemaTypes>
 
                             <compatibilityLevels>
                                 <com.echcherqaoui.jobboard.UserCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.UserCreatedEvent>
+
+                                <com.echcherqaoui.jobboard.CompanyCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyCreatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
+                                <com.echcherqaoui.jobboard.CompanyDeletedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+
+                                <com.echcherqaoui.jobboard.JobEvent> BACKWARD </com.echcherqaoui.jobboard.JobEvent>
+                                <com.echcherqaoui.jobboard.JobStatusChangedEvent> BACKWARD </com.echcherqaoui.jobboard.JobStatusChangedEvent>
+                                <com.echcherqaoui.jobboard.JobDeletedEvent> BACKWARD </com.echcherqaoui.jobboard.JobDeletedEvent>
                             </compatibilityLevels>
                         </configuration>
                     </plugin>

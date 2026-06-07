@@ -1,4 +1,4 @@
-package com.echcherqaoui.jobboard.authservice.config.kafka;
+package com.echcherqaoui.jobboard.userservice.config;
 
 import com.google.protobuf.Message;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer;
@@ -9,16 +9,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-public class KafkaConfig {
+public class OutboxConfig {
 
     private final KafkaProperties kafkaProperties;
 
-    // ── Producers ─────────────────────────────────────────────────
     @Bean
     public KafkaProtobufSerializer<Message> kafkaProtobufSerializer() {
         KafkaProtobufSerializer<Message> serializer = new KafkaProtobufSerializer<>();
-
-        // Use the properties from application.yml (schema.registry.url, etc.)
         serializer.configure(
               kafkaProperties.buildProducerProperties(null),
               false
@@ -26,5 +23,4 @@ public class KafkaConfig {
 
         return serializer;
     }
-
 }
