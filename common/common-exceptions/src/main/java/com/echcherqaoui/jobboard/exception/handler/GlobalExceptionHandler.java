@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
               VALIDATION_FAILED.getCode(),
               VALIDATION_FAILED.getMessage(),
               ExceptionUtils.sanitizePath(request)
-        ).setValidationErrors(errors);
+        ).withValidationErrors(errors);
 
         return ResponseEntity.badRequest().body(response);
     }

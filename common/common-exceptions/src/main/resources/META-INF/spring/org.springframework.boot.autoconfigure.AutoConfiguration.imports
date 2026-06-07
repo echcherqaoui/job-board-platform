@@ -1,1 +1,4 @@
 com.echcherqaoui.jobboard.exception.autoconfigure.CommonExceptionsAutoConfiguration
+com.echcherqaoui.jobboard.exception.autoconfigure.GrpcClientExceptionAutoConfiguration
+com.echcherqaoui.jobboard.exception.autoconfigure.GrpcSecurityExceptionAutoConfiguration
+com.echcherqaoui.jobboard.exception.autoconfigure.GrpcServerExceptionAutoConfiguration

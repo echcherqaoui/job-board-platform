@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -19,11 +20,11 @@ public class ErrorResponse {
     public ErrorResponse(String code, String message, String path) {
         this.code = code;
         this.message = message;
-        this.timestamp = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        this.timestamp = Instant.now().truncatedTo(SECONDS);
         this.path = path;
     }
 
-    public ErrorResponse setValidationErrors(Set<String> validationErrors) {
+    public ErrorResponse withValidationErrors(Set<String> validationErrors) {
         this.validationErrors = validationErrors;
         return this;
     }
