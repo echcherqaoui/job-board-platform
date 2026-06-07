@@ -1,6 +1,7 @@
 package com.echcherqaoui.jobboard.security.service.impl;
 
 import com.echcherqaoui.jobboard.security.service.SignatureService;
+import org.springframework.lang.NonNull;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,7 +17,9 @@ public class HmacSignatureService implements SignatureService {
 
     private final byte[] secretKey;
 
-    public HmacSignatureService(String secret) {
+    public HmacSignatureService(@NonNull String secret) {
+        if (secret.isBlank())
+            throw new IllegalArgumentException("HMAC secret must not be blank");
         this.secretKey = secret.getBytes(UTF_8);
     }
 

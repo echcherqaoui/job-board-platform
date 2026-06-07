@@ -4,11 +4,9 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-@Component
 public class JwtContextHolder {
 
     public Jwt getJwt() {
@@ -26,11 +24,14 @@ public class JwtContextHolder {
     public String getEmail() {
         String email = getJwt().getClaimAsString("email");
         if (email == null) throw new IllegalStateException("Email claim missing");
+
         return email;
     }
 
     public AuthenticatedUser getAuthenticatedUser() {
         Jwt jwt = getJwt();
-        return new AuthenticatedUser(UUID.fromString(jwt.getSubject()), getEmail());
+        String email = jwt.getClaimAsString("email");
+        if (email == null) throw new IllegalStateException("Email claim missing");
+        return new AuthenticatedUser(UUID.fromString(jwt.getSubject()), email);
     }
 }

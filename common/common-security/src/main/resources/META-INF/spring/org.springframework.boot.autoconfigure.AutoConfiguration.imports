@@ -1,1 +1,3 @@
 com.echcherqaoui.jobboard.security.autoconfigure.CommonSecurityAutoConfiguration
+com.echcherqaoui.jobboard.security.autoconfigure.GrpcClientSecurityAutoConfiguration
+com.echcherqaoui.jobboard.security.autoconfigure.GrpcServerSecurityAutoConfiguration
