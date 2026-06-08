@@ -5,6 +5,7 @@ import com.echcherqaoui.jobboard.jobservice.dto.request.JobSearchCriteria;
 import com.echcherqaoui.jobboard.jobservice.dto.request.JobStatusUpdateRequest;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobResponse;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobSummaryResponse;
+import com.echcherqaoui.jobboard.jobservice.exception.domain.JobExpiredException;
 import com.echcherqaoui.jobboard.jobservice.exception.domain.JobNotFoundException;
 import com.echcherqaoui.jobboard.jobservice.exception.domain.UnauthorizedJobAccessException;
 import com.echcherqaoui.jobboard.jobservice.mapper.JobMapper;
@@ -26,6 +27,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +37,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.echcherqaoui.jobboard.jobservice.exception.enums.JobErrorCode.COMPANY_DOES_NOT_OWN_JOB;
+import static com.echcherqaoui.jobboard.jobservice.model.JobStatus.CLOSED;
 
 @Service
 @RequiredArgsConstructor
@@ -171,6 +174,9 @@ public class JobServiceImpl implements JobService {
 
         Job job = findAndVerifyOwnership(jobId, currentUserId);
 
+        if (job.getExpiresAt() != null && job.getExpiresAt().isBefore(OffsetDateTime.now()))
+            throw new JobExpiredException(jobId);
+
         job.setStatus(request.status());
         Job saved = jobRepository.save(job);
 
@@ -184,6 +190,17 @@ public class JobServiceImpl implements JobService {
         jobOutboxService.publishJobStatusChanged(saved);
 
         return enrichWithCompany(job, currentUserId);
+    }
+
+    @Transactional
+    @Override
+    public void expireJobs() {
+        List<Job> expired = jobRepository.findExpiredJobs(OffsetDateTime.now());
+        if (expired.isEmpty()) return;
+
+        expired.forEach(job -> job.setStatus(CLOSED));
+        jobRepository.saveAll(expired);
+        jobOutboxService.publishJobStatusChangedBatch(expired);
     }
 
     @Transactional

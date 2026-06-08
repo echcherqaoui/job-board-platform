@@ -25,5 +25,7 @@ public interface JobService {
     JobResponse updateJobStatus(UUID jobId,
                                 @NonNull JobStatusUpdateRequest request);
 
+    void expireJobs();
+
     void deleteJob(UUID jobId);
 }

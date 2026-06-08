@@ -192,6 +192,20 @@ resource "kafka_topic" "job_events_job_status_changed" {
   }
 }
 
+resource "kafka_topic" "job_events_job_expired" {
+  name               = "job.events.job-expired"
+  replication_factor = 1
+  partitions         = local.standard_partitions
+  config = {
+    "cleanup.policy" = "delete"
+    "retention.ms"   = local.retention_7_days
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "kafka_topic" "job_events_job_deleted" {
   name               = "job.events.job-deleted"
   replication_factor = 1
@@ -236,6 +250,20 @@ resource "kafka_topic" "job_events_job_updated_dlt" {
 
 resource "kafka_topic" "job_events_job_status_changed_dlt" {
   name               = "job.events.job-status-changed-dlt"
+  replication_factor = 1
+  partitions         = 1
+  config = {
+    "cleanup.policy" = "delete"
+    "retention.ms"   = local.retention_7_days
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "kafka_topic" "job_events_job_expired_dlt" {
+  name               = "job.events.job-expired-dlt"
   replication_factor = 1
   partitions         = 1
   config = {

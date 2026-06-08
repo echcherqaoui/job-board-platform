@@ -36,6 +36,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
     private static final String EVENT_TYPE_JOB_UPDATED = "job-updated";
     private static final String EVENT_TYPE_JOB_DELETED = "job-deleted";
     private static final String EVENT_TYPE_JOB_STATUS_CHANGED = "job-status-changed";
+    private static final String EVENT_TYPE_JOB_EXPIRED = "job-expired";
     private static final String SERIALIZATION_CONTEXT = "outbox-serialization-context";
 
 
@@ -135,6 +136,36 @@ public class JobOutboxServiceImpl implements JobOutboxService {
         persist(proto, jobId, EVENT_TYPE_JOB_STATUS_CHANGED);
     }
 
+    private OutboxEvent buildStatusChangedOutboxEvent(@NonNull Job job) {
+        Instant now = Instant.now();
+        String eventId = UUID.randomUUID().toString();
+        String jobId = job.getId().toString();
+
+        String signature = signatureService.sign(
+              eventId,
+              jobId,
+              String.valueOf(now.getEpochSecond())
+        );
+
+        JobStatusChangedEvent proto = JobStatusChangedEvent.newBuilder()
+              .setEventId(eventId)
+              .setJobId(jobId)
+              .setRecruiterId(job.getRecruiterId().toString())
+              .setStatus(job.getStatus().name())
+              .setOccurredAt(InstantConverter.toTimestamp(now))
+              .setSignature(signature)
+              .build();
+
+        byte[] payload = serializer.serialize(SERIALIZATION_CONTEXT, proto);
+
+        return new OutboxEvent()
+              .setId(UUID.randomUUID())
+              .setCreatedAt(OffsetDateTime.now())
+              .setAggregateType(AGGREGATE_TYPE)
+              .setAggregateId(jobId)
+              .setEventType(EVENT_TYPE_JOB_EXPIRED)
+              .setPayload(payload);
+    }
 
     private void publishJobDeletedEvent(@NonNull Job job) {
         Instant now = Instant.now();
@@ -171,6 +202,15 @@ public class JobOutboxServiceImpl implements JobOutboxService {
     @Override
     public void publishJobStatusChanged(Job job) {
         publishJobStatusChangedEvent(job);
+    }
+
+    @Override
+    public void publishJobStatusChangedBatch(List<Job> jobs) {
+        List<OutboxEvent> events = jobs.stream()
+              .map(this::buildStatusChangedOutboxEvent)
+              .toList();
+
+        outboxEventRepository.saveAll(events);
     }
 
     @Override
