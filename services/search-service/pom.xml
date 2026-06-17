@@ -25,16 +25,37 @@
         DEPENDENCIES
     ════════════════════════════════════════════════════════════════ -->
     <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>common-exceptions</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>contracts</artifactId>
+        </dependency>
+
         <!-- Service Discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Spring Web -->
+        <!-- Web Layer -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <!-- Elasticsearch Integration -->
@@ -47,6 +68,12 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <!-- Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
         <!-- Testing -->

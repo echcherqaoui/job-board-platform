@@ -1,0 +1,86 @@
+{
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "recruiterId": {
+      "type": "keyword"
+    },
+    "companyName": {
+      "type": "keyword"
+    },
+    "companyLogo": {
+      "type": "keyword",
+      "index": false,
+      "doc_values": false
+    },
+    "title": {
+      "type": "text",
+      "analyzer": "job_analyzer",
+      "search_analyzer": "job_analyzer",
+      "fields": {
+        "autocomplete": {
+          "type": "text",
+          "analyzer": "autocomplete_analyzer",
+          "search_analyzer": "autocomplete_search_analyzer"
+        },
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "description": {
+      "type": "text",
+      "analyzer": "job_analyzer",
+      "search_analyzer": "job_analyzer"
+    },
+    "requirements": {
+      "type": "text",
+      "analyzer": "job_analyzer",
+      "search_analyzer": "job_analyzer"
+    },
+    "location": {
+      "type": "text",
+      "analyzer": "job_analyzer",
+      "search_analyzer": "job_analyzer",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      }
+    },
+    "workModality": {
+      "type": "keyword"
+    },
+    "jobType": {
+      "type": "keyword"
+    },
+    "experienceLevel": {
+      "type": "keyword"
+    },
+    "status": {
+      "type": "keyword"
+    },
+    "salaryMin": {
+      "type": "double"
+    },
+    "salaryMax": {
+      "type": "double"
+    },
+    "currency": {
+      "type": "keyword",
+      "index": false
+    },
+    "skills": {
+      "type": "keyword"
+    },
+    "createdAt": {
+      "type": "date",
+      "format": "strict_date_optional_time"
+    },
+    "expiresAt": {
+      "type": "date",
+      "format": "strict_date_optional_time"
+    }
+  }
+}

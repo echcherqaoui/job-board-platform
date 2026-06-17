@@ -1,0 +1,48 @@
+{
+  "analysis": {
+    "analyzer": {
+      "job_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "job_stop",
+          "job_stemmer"
+        ]
+      },
+      "autocomplete_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "autocomplete_filter"
+        ]
+      },
+      "autocomplete_search_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding"
+        ]
+      }
+    },
+    "filter": {
+      "job_stop": {
+        "type": "stop",
+        "stopwords": "_english_"
+      },
+      "job_stemmer": {
+        "type": "stemmer",
+        "language": "english"
+      },
+      "autocomplete_filter": {
+        "type": "edge_ngram",
+        "min_gram": 2,
+        "max_gram": 20
+      }
+    }
+  }
+}
