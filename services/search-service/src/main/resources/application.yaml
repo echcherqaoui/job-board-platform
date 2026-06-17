@@ -1,3 +1,92 @@
+# ── API & Server ──────────────────────────────────────────────
+api:
+  base-path: /api/v1
+
+server:
+  port: ${SEARCH_SERVICE_PORT}
+
+
+# ── Service Discovery ─────────────────────────────────────────
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: search-service
+
+# ── Elasticsearch ─────────────────────────────────────────────
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS}
+    username: ${ELASTICSEARCH_USERNAME:}
+    password: ${ELASTICSEARCH_PASSWORD:}
+    connection-timeout: 5s
+    socket-timeout: 30s
+
+# ── Kafka ─────────────────────────────────────────────────────
+  kafka:
+    bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+    properties:
+      schema.registry.url: ${SC_REGISTRY_URL}
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
+
+    consumer:
+      group-id: ${KF_SEARCH_CONSUMER_GROUP_ID}
+      auto-offset-reset: ${KF_AUTO_OFFSET_RESET:earliest}
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+
+# ── Security ──────────────────────────────────────────────────
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${JWT_ISSUER_URI}
+
+# ── Actuator Management ─────────────────────────────────────────
+management:
+  server:
+    port: ${MANAGEMENT_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+# ── Logging ─────────────────────────────────────────────────────
+logging:
+  level:
+    com.echcherqaoui.jobboard.search: DEBUG
+    org.springframework.data.elasticsearch: WARN
+    tracer: WARN
+
+# ── Search config ─────────────────────────────────────────────────
+search:
+  default-page-size: 20
+  max-page-size: 100
+  highlight:
+    pre-tag: "<mark>"
+    post-tag: "</mark>"
+
+kafka:
+  topics:
+    job:
+      job-created: job.events.job-created
+      job-updated: job.events.job-updated
+      job-status-changed: job.events.job-status-changed
+      job-expired: job.events.job-expired
+      job-deleted: job.events.job-deleted
+
+app:
+  security:
+    hmac:
+      secret: ${HMAC_SECRET_KEY}

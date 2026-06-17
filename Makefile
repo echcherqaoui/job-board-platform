@@ -72,7 +72,7 @@ up-dev: # Start full stack — infra + app + dev tools
 
 .PHONY: up-dev-tools
 up-dev-tools: # Start observability stack
-	$(COMPOSE) $(INFRA_FILE) $(DEV_FILE) up -d
+	$(COMPOSE) --profile tools $(INFRA_FILE) $(DEV_FILE) up -d
 	@echo "✓ Dev tools started"
 
 .PHONY: down

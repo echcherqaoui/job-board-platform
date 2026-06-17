@@ -157,6 +157,27 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION}
+    container_name: elasticsearch-job-board
+    ports:
+      - "${ES_PORT}:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - cluster.name=jobboard-cluster
+    networks:
+      - job-board-net
+    healthcheck:
+      test: curl -sf http://localhost:9200/_cluster/health | grep -v '"status":"red"'
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
 networks:
   job-board-net:
     driver: bridge
@@ -166,4 +187,6 @@ volumes:
   postgres_data:
   redis_data:
   kafka-0_data:
+    driver: local
+  elasticsearch_data:
     driver: local

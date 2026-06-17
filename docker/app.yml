@@ -23,8 +23,6 @@ services:
     build:
       context: ../infrastructure/gateway-service
     container_name: gateway-service-job-board
-    ports:
-      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
     environment:
       # Server
       GATEWAY_PORT: ${GATEWAY_PORT}
@@ -104,6 +102,8 @@ services:
       postgres:
         condition: service_healthy
       discovery-service:
+        condition: service_healthy
+      kafka-0:
         condition: service_healthy
 
     networks:
@@ -198,6 +198,8 @@ services:
         condition: service_started
       auth-service:
         condition: service_started
+      kafka-0:
+        condition: service_healthy
 
     networks:
       - job-board-net
@@ -233,10 +235,43 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
+  search-service:
+    build:
+      context: ../services/search-service
+      dockerfile: Dockerfile
+    container_name: search-service-job-board
+    environment:
+      # Server
+      SEARCH_SERVICE_PORT: ${SEARCH_SERVICE_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      # Discovery
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Database
+      ELASTICSEARCH_URIS: http://elasticsearch:9200
+
+      # Security
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      HMAC_SECRET_KEY: ${SECRET_KEY}
+
+      # Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
+      KF_SEARCH_CONSUMER_GROUP_ID: ${KF_SEARCH_CONSUMER_GROUP_ID}
+
+    depends_on:
       discovery-service:
         condition: service_started
-      auth-service:
-        condition: service_started
+      kafka-0:
+        condition: service_healthy
 
     networks:
       - job-board-net

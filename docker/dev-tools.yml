@@ -37,5 +37,20 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  kibana:
+    image: kibana:${KIBANA_VERSION}
+    container_name: kibana-job-board
+    ports:
+      - "${KIBANA_PORT}:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks:
+      - job-board-net
+    profiles: [ "tools" ]   # only starts with: docker compose --profile tools up
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   pgadmin_data:
