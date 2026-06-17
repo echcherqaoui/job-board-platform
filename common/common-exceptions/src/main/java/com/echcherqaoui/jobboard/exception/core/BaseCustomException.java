@@ -13,4 +13,5 @@ public abstract class BaseCustomException extends RuntimeException {
         this.errorCode = errorCode;
         this.args = args;
     }
+
 }

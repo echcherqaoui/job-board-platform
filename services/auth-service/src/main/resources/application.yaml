@@ -1,6 +1,8 @@
+# ────── Server ──────────────────────────────────────────────
 server:
   port: ${AUTH_SERVICE_PORT}
 
+# ── Service Discovery ─────────────────────────────────────────
 eureka:
   instance:
     prefer-ip-address: true
@@ -9,10 +11,12 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_SERVICE_URL}
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: auth-service
 
+# ── Database (PostgreSQL/JPA) ───────────────────────────────
   datasource:
     hikari:
       pool-name: HikariPool-auth
@@ -24,6 +28,7 @@ spring:
     hibernate:
       ddl-auto: validate
 
+# ── Database Migration (Flyway) ─────────────────────────────
   flyway:
     enabled: true
     locations:
@@ -31,6 +36,7 @@ spring:
     placeholders:
       outbox_publication_name: auth_outbox_publication
 
+# ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
     properties:
@@ -43,11 +49,13 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
 
+# ── Logging ─────────────────────────────────────────────────────
 logging:
   level:
     org.springframework.security: ${LOG_LEVEL_SECURITY}
     org.springframework.security.oauth2: ${LOG_LEVEL_OAUTH2:TRACE}
 
+# ── Actuator Management ─────────────────────────────────────────
 management:
   server:
     port: ${MANAGEMENT_PORT}
@@ -56,6 +64,7 @@ management:
       exposure:
         include: health, info
 
+# ── Auth config ───────────────────────────────────────────────────
 auth:
   server:
     client-id: ${BFF_CLIENT_ID}

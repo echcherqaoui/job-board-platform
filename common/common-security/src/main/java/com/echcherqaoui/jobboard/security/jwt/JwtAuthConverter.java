@@ -23,7 +23,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorities = extractRoles(jwt).stream()
-              .map(SimpleGrantedAuthority::new)
+              .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
               .collect(Collectors.toUnmodifiableSet());
 
         return new JwtAuthenticationToken(jwt, authorities, jwt.getSubject());

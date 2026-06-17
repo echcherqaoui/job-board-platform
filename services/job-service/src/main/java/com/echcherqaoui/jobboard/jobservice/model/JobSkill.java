@@ -20,9 +20,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Entity
 @Table(
       name = "job_skills",
-      indexes = {
-            @Index(name = "idx_job_skills_job_id", columnList = "job_id")
-      }
+      indexes = {@Index(name = "idx_job_skills_job_id", columnList = "job_id")}
 )
 @Getter
 @Setter

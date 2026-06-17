@@ -27,7 +27,9 @@ public class SecurityConfig {
               ).authorizeHttpRequests(auth -> auth
                     .requestMatchers("/actuator/**").permitAll()
                     .anyRequest().authenticated()
-              ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)));
+              ).oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter))
+              );
 
         return http.build();
     }

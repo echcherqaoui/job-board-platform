@@ -27,7 +27,6 @@ public class SecurityConfig {
         this.basePath = basePath;
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         String jobPath = basePath + "/jobs";

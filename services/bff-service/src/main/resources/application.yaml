@@ -1,25 +1,30 @@
+# ── API & Server ──────────────────────────────────────────────
 server:
   port: ${BFF_PORT}
   reactive:
     session:
       cookie:
         name: JOB_BOARD_SESSION
+        # Sets a secure, HttpOnly session cookie to hide the OAuth tokens from the browser (BFF Pattern)
         http-only: true
         secure: ${SESSION_SECURE}
         same-site: lax
+
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: bff-service
   main:
-    web-application-type: reactive
+    web-application-type: reactive # Required for Spring Cloud Gateway and WebFlux engine
 
-  # ── Redis — stores JWT server-side (BFF pattern) ──────────────
+# ── Redis — stores JWT server-side (BFF pattern) ──────────────
   data:
     redis:
       host: ${RD_HOST}
       port: ${RD_PORT}
       password: ${RD_PASSWORD}
 
+# ── Security ──────────────────────────────────────────────────
   security:
     oauth2:
       client:
@@ -37,6 +42,7 @@ spring:
           spring:
             issuer-uri: ${JWT_ISSUER_URI}
 
+# ── Spring Cloud Gateway ──────────────────────────────────────
   cloud:
     gateway:
       server:
@@ -61,7 +67,7 @@ spring:
               predicates:
                 - Path=/api/**
 
-  # Session Management
+# ── Session Management ────────────────────────────────────────
   session:
     timeout: 30m
     store-type: redis
@@ -69,6 +75,7 @@ spring:
       flush-mode: on_save
       namespace: "spring:session:bff"
 
+# ── Service Discovery ───────────────────────────────────────────
 eureka:
   instance:
     prefer-ip-address: true
@@ -77,13 +84,14 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_SERVICE_URL}
 
-# Logging
+# ── Logging ─────────────────────────────────────────────────────
 logging:
   level:
     org.springframework.security: ${LOG_LEVEL_SECURITY}
     org.springframework.session: INFO
     org.springframework.cloud.gateway: ${LOG_LEVEL_GATEWAY}
 
+# ── Actuator Management ─────────────────────────────────────────
 management:
   server:
     port: ${MANAGEMENT_PORT}
@@ -92,5 +100,6 @@ management:
       exposure:
         include: health, info
 
+# ── BFF  Config ─────────────────────────────────────────────
 bff:
   post-logout-redirect-uri: "{baseUrl}/login"

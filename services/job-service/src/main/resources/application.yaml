@@ -1,15 +1,18 @@
+# ── API & Server ──────────────────────────────────────────────
 api:
   base-path: /api/v1
 
 server:
   port: ${JOB_SERVICE_PORT}
 
+# ── gRPC Clients ──────────────────────────────────────────────
 grpc:
   client:
     user-service:
       address: 'discovery:///user-service'
       negotiation-type: plaintext
 
+# ── Service Discovery ─────────────────────────────────────────
 eureka:
   instance:
     prefer-ip-address: true
@@ -18,10 +21,12 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_SERVICE_URL}
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: job-service
 
+# ── Database (PostgreSQL/JPA) ───────────────────────────────
   datasource:
     hikari:
       pool-name: HikariPool-job
@@ -34,18 +39,22 @@ spring:
     hibernate:
       ddl-auto: validate
 
+# ── Database Migration (Flyway) ─────────────────────────────
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
     placeholders:
       outbox_publication_name: job_outbox_publication
 
+# ── Security  ───────────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${JWT_ISSUER_URI}
 
+# ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
     properties:
@@ -67,6 +76,7 @@ spring:
       properties:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
 
+# ── Job Config ─────────────────────────────────────────────
 kafka:
   topics:
     company:

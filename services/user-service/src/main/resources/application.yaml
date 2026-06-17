@@ -1,11 +1,14 @@
+# ── Server ──────────────────────────────────────────────────
 server:
   port: ${USER_SERVICE_PORT}
 
+# ── gRPC Clients ──────────────────────────────────────────────
 grpc:
   server:
     port: ${USER_SERVICE_GRPC_PORT}
     address: 0.0.0.0
 
+# ── Service Discovery ─────────────────────────────────────────
 eureka:
   instance:
     prefer-ip-address: true
@@ -17,10 +20,12 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_SERVICE_URL}
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: user-service
 
+# ── Database (PostgreSQL/JPA) ───────────────────────────────
   datasource:
     hikari:
       pool-name: HikariPool-auth
@@ -33,6 +38,7 @@ spring:
     hibernate:
       ddl-auto: validate
 
+# ── Database Migration (Flyway) ─────────────────────────────
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -40,12 +46,14 @@ spring:
     placeholders:
       outbox_publication_name: user_outbox_publication
 
+# ── Security  ───────────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${JWT_ISSUER_URI}
 
+# ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
     properties:
@@ -68,6 +76,7 @@ spring:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
         specific.protobuf.value.type: com.echcherqaoui.jobboard.event.UserCreatedEvent
 
+# ── User Config ─────────────────────────────────────────────
 kafka:
   topics:
     auth:

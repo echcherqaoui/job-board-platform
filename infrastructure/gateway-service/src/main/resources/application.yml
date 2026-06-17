@@ -1,10 +1,13 @@
+# ── API & Server ──────────────────────────────────────────────
 server:
   port: ${GATEWAY_PORT}
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: gateway-service
 
+# ── Security ──────────────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
@@ -12,6 +15,7 @@ spring:
           # This triggers the automatic discovery and key fetch
           issuer-uri: ${JWT_ISSUER_URI}
 
+# ── Spring Cloud Gateway ──────────────────────────────────────
   cloud:
     gateway:
       server:
@@ -40,6 +44,13 @@ spring:
               predicates:
                 - Path=/api/v1/jobs/**
 
+            # SEARCH SERVICE
+            - id: search-service
+              uri: lb://search-service
+              predicates:
+                - Path=/api/v1/search/**
+
+# ── Service Discovery ───────────────────────────────────────────
 eureka:
   instance:
     prefer-ip-address: true
@@ -48,7 +59,7 @@ eureka:
     service-url:
       defaultZone: ${DISCOVERY_SERVICE_URL}
 
-# Logging
+# ── Logging ─────────────────────────────────────────────────────
 logging:
   level:
     org.springframework.cloud.gateway: ${LOG_LEVEL_GATEWAY}

@@ -55,6 +55,7 @@
 			<groupId>com.echcherqaoui.jobboard</groupId>
 			<artifactId>shared-utils</artifactId>
 		</dependency>
+
 		<!-- Service Discovery -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
