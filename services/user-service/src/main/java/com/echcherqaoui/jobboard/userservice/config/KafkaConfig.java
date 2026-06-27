@@ -1,6 +1,6 @@
 package com.echcherqaoui.jobboard.userservice.config;
 
-import com.echcherqaoui.jobboard.event.UserCreatedEvent;
+import com.echcherqaoui.jobboard.auth.event.UserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.TopicPartition;

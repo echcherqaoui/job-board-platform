@@ -2,10 +2,9 @@ package com.echcherqaoui.jobboard.userservice.service.impl;
 
 import com.echcherqaoui.jobboard.commonoutbox.model.OutboxEvent;
 import com.echcherqaoui.jobboard.commonoutbox.repository.OutboxEventRepository;
-import com.echcherqaoui.jobboard.event.CompanyCreatedEvent;
-import com.echcherqaoui.jobboard.event.CompanyDeletedEvent;
-import com.echcherqaoui.jobboard.event.CompanyUpdatedEvent;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
+import com.echcherqaoui.jobboard.user.event.CompanyDeletedEvent;
+import com.echcherqaoui.jobboard.user.event.CompanyUpsertedEvent;
 import com.echcherqaoui.jobboard.userservice.model.RecruiterProfile;
 import com.echcherqaoui.jobboard.userservice.service.CompanyOutboxService;
 import com.echcherqaoui.jobboard.util.InstantConverter;
@@ -20,6 +19,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class CompanyOutboxServiceImpl implements CompanyOutboxService {
@@ -29,14 +30,14 @@ public class CompanyOutboxServiceImpl implements CompanyOutboxService {
     private final SignatureService signatureService;
 
     private static final String AGGREGATE_TYPE = "company";
-    private static final String EVENT_TYPE_COMPANY_CREATED = "company-created";
-    private static final String EVENT_TYPE_COMPANY_UPDATED = "company-updated";
+    private static final String EVENT_TYPE_COMPANY_UPSERTED = "company-upserted";
     private static final String EVENT_TYPE_COMPANY_DELETED = "company-deleted";
 
     // Placeholder topic — RecordNameStrategy resolves Schema Registry subject
     // from the fully-qualified Protobuf type name, not this value.
     private static final String SERIALIZATION_CONTEXT = "outbox-serialization-context";
 
+    @NonNull
     private Message buildProto(@NonNull String eventType,
                                String eventId,
                                String recruiterId,
@@ -47,16 +48,7 @@ public class CompanyOutboxServiceImpl implements CompanyOutboxService {
         String companyLogoUrl = profile.getCompanyLogoUrl() != null ? profile.getCompanyLogoUrl() : "";
 
         return switch (eventType) {
-            case EVENT_TYPE_COMPANY_CREATED -> CompanyCreatedEvent.newBuilder()
-                  .setEventId(eventId)
-                  .setRecruiterId(recruiterId)
-                  .setCompanyName(profile.getCompanyName())
-                  .setCompanyLogo(companyLogoUrl)
-                  .setSignature(signature)
-                  .setOccurredAt(occurredAt)
-                  .build();
-
-            case EVENT_TYPE_COMPANY_UPDATED -> CompanyUpdatedEvent.newBuilder()
+            case EVENT_TYPE_COMPANY_UPSERTED -> CompanyUpsertedEvent.newBuilder()
                   .setEventId(eventId)
                   .setRecruiterId(recruiterId)
                   .setCompanyName(profile.getCompanyName())
@@ -112,13 +104,8 @@ public class CompanyOutboxServiceImpl implements CompanyOutboxService {
     }
 
     @Override
-    public void publishCompanyCreated(RecruiterProfile profile) {
-        publishCompanyEvent(profile, EVENT_TYPE_COMPANY_CREATED);
-    }
-
-    @Override
-    public void publishCompanyUpdated(RecruiterProfile profile) {
-        publishCompanyEvent(profile, EVENT_TYPE_COMPANY_UPDATED);
+    public void publishCompanyUpserted(RecruiterProfile profile) {
+        publishCompanyEvent(profile, EVENT_TYPE_COMPANY_UPSERTED);
     }
 
     @Override

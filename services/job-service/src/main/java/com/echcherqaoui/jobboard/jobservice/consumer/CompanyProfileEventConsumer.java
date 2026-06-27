@@ -1,11 +1,10 @@
 package com.echcherqaoui.jobboard.jobservice.consumer;
 
-import com.echcherqaoui.jobboard.event.CompanyCreatedEvent;
-import com.echcherqaoui.jobboard.event.CompanyDeletedEvent;
-import com.echcherqaoui.jobboard.event.CompanyUpdatedEvent;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
 import com.echcherqaoui.jobboard.jobservice.service.CompanyProfileService;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
+import com.echcherqaoui.jobboard.user.event.CompanyDeletedEvent;
+import com.echcherqaoui.jobboard.user.event.CompanyUpsertedEvent;
 import com.echcherqaoui.jobboard.util.InstantConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +41,11 @@ public class CompanyProfileEventConsumer {
     }
 
     @KafkaListener(
-          topics = "${kafka.topics.company.company-created}",
+          topics = "${kafka.topics.company.company-upserted}",
           groupId = "${spring.kafka.consumer.group-id}",
-          containerFactory = "companyCreatedListenerContainerFactory"
+          containerFactory = "companyUpsertedListenerContainerFactory"
     )
-    public void onCompanyCreated(@NonNull CompanyCreatedEvent event, Acknowledgment ack) {
+    public void onCompanyUpserted(@NonNull CompanyUpsertedEvent event, @NonNull Acknowledgment ack) {
         validateEvent(
               event.getEventId(),
               event.getRecruiterId(),
@@ -54,32 +53,7 @@ public class CompanyProfileEventConsumer {
               event.getSignature()
         );
 
-        log.info("Received CompanyCreatedEvent for recruiter {}", event.getRecruiterId());
-        companyProfileService.upsert(
-              UUID.fromString(event.getRecruiterId()),
-              event.getCompanyName(),
-              event.getCompanyLogo(),
-              event.getEventId(),
-              InstantConverter.toInstant(event.getOccurredAt()).atOffset(UTC)
-        );
-
-        ack.acknowledge();
-    }
-
-    @KafkaListener(
-          topics = "${kafka.topics.company.company-updated}",
-          groupId = "${spring.kafka.consumer.group-id}",
-          containerFactory = "companyUpdatedListenerContainerFactory"
-    )
-    public void onCompanyUpdated(@NonNull CompanyUpdatedEvent event, Acknowledgment ack) {
-        validateEvent(
-              event.getEventId(),
-              event.getRecruiterId(),
-              String.valueOf(event.getOccurredAt().getSeconds()),
-              event.getSignature()
-        );
-
-        log.info("Received CompanyUpdatedEvent for recruiter {}", event.getRecruiterId());
+        log.info("Received CompanyUpsertedEvent for recruiter {}", event.getRecruiterId());
         companyProfileService.upsert(
               UUID.fromString(event.getRecruiterId()),
               event.getCompanyName(),
@@ -96,7 +70,7 @@ public class CompanyProfileEventConsumer {
           groupId = "${spring.kafka.consumer.group-id}",
           containerFactory = "companyDeletedListenerContainerFactory"
     )
-    public void onCompanyDeleted(@NonNull CompanyDeletedEvent event, Acknowledgment ack) {
+    public void onCompanyDeleted(@NonNull CompanyDeletedEvent event, @NonNull Acknowledgment ack) {
         validateEvent(
               event.getEventId(),
               event.getRecruiterId(),

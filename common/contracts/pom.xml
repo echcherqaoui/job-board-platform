@@ -80,15 +80,12 @@
                                     src/main/proto/jobboard/auth/event/user_events.proto
                                 </jobboard.auth.event.UserCreatedEvent>
 
-                                <com.echcherqaoui.jobboard.CompanyCreatedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/company_created_event.proto
-                                </com.echcherqaoui.jobboard.CompanyCreatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/company_updated_event.proto
-                                </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyDeletedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/company_deleted_event.proto
-                                </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+                                <jobboard.user.event.CompanyUpsertedEvent>
+                                    src/main/proto/jobboard/user/event/company_events.proto
+                                </jobboard.user.event.CompanyUpsertedEvent>
+                                <jobboard.user.event.CompanyDeletedEvent>
+                                    src/main/proto/jobboard/user/event/company_events.proto
+                                </jobboard.user.event.CompanyDeletedEvent>
 
                                 <com.echcherqaoui.jobboard.JobEvent>
                                     src/main/proto/com/echcherqaoui/jobboard/job_event.proto
@@ -104,9 +101,8 @@
                             <schemaTypes>
                                 <jobboard.auth.event.UserCreatedEvent>PROTOBUF</jobboard.auth.event.UserCreatedEvent>
 
-                                <com.echcherqaoui.jobboard.CompanyCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyCreatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyDeletedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+                                <jobboard.user.event.CompanyUpsertedEvent>PROTOBUF</jobboard.user.event.CompanyUpsertedEvent>
+                                <jobboard.user.event.CompanyDeletedEvent>PROTOBUF</jobboard.user.event.CompanyDeletedEvent>
 
                                 <com.echcherqaoui.jobboard.JobEvent> PROTOBUF </com.echcherqaoui.jobboard.JobEvent>
                                 <com.echcherqaoui.jobboard.JobStatusChangedEvent> PROTOBUF </com.echcherqaoui.jobboard.JobStatusChangedEvent>
@@ -116,9 +112,8 @@
                             <compatibilityLevels>
                                 <jobboard.auth.event.UserCreatedEvent>BACKWARD</jobboard.auth.event.UserCreatedEvent>
 
-                                <com.echcherqaoui.jobboard.CompanyCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyCreatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyUpdatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
-                                <com.echcherqaoui.jobboard.CompanyDeletedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyDeletedEvent>
+                                <jobboard.user.event.CompanyUpsertedEvent>BACKWARD</jobboard.user.event.CompanyUpsertedEvent>
+                                <jobboard.user.event.CompanyDeletedEvent>BACKWARD</jobboard.user.event.CompanyDeletedEvent>
 
                                 <com.echcherqaoui.jobboard.JobEvent> BACKWARD </com.echcherqaoui.jobboard.JobEvent>
                                 <com.echcherqaoui.jobboard.JobStatusChangedEvent> BACKWARD </com.echcherqaoui.jobboard.JobStatusChangedEvent>

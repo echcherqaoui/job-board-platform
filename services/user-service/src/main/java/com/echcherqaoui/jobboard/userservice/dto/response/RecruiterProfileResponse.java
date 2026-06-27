@@ -2,7 +2,6 @@ package com.echcherqaoui.jobboard.userservice.dto.response;
 
 import com.echcherqaoui.jobboard.userservice.enums.CompanySize;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record RecruiterProfileResponse(
@@ -15,7 +14,5 @@ public record RecruiterProfileResponse(
       String companyLogoUrl,
       String companyWebsite,
       String companyLocation,
-      CompanySize companySize,
-      OffsetDateTime createdAt,
-      OffsetDateTime updatedAt) {
+      CompanySize companySize) {
 }

@@ -1,6 +1,6 @@
-package com.echcherqaoui.jobboard.userservice.event;
+package com.echcherqaoui.jobboard.userservice.consumer;
 
-import com.echcherqaoui.jobboard.event.UserCreatedEvent;
+import com.echcherqaoui.jobboard.auth.event.UserCreatedEvent;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import com.echcherqaoui.jobboard.userservice.service.JobSeekerProfileService;

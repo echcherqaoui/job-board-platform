@@ -1,10 +1,11 @@
 package com.echcherqaoui.jobboard.jobservice.service.impl;
 
-import com.echcherqaoui.jobboard.jobservice.grpc.UserServiceGrpcClient;
+import com.echcherqaoui.jobboard.jobservice.grpc.UserLookupSupport;
+import com.echcherqaoui.jobboard.jobservice.idempotency.IdempotencyGuard;
 import com.echcherqaoui.jobboard.jobservice.model.CompanyProfile;
 import com.echcherqaoui.jobboard.jobservice.repository.CompanyProfileRepository;
 import com.echcherqaoui.jobboard.jobservice.service.CompanyProfileService;
-import com.echcherqaoui.jobboard.user.grpc.CompanyProfileGrpc;
+import com.echcherqaoui.jobboard.user.grpc.CompanySummary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,13 @@ import static java.time.ZoneOffset.UTC;
 public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     private final CompanyProfileRepository companyProfileRepository;
-    private final UserServiceGrpcClient userServiceGrpcClient;
+    private final UserLookupSupport userLookupSupport;
+    private final IdempotencyGuard idempotencyGuard;
 
     private CompanyProfile fetchFromGrpcAndCache(UUID recruiterId) {
         log.info("Cache miss for recruiter {} — executing gRPC backup fetch", recruiterId);
 
-        Optional<CompanyProfileGrpc> grpcResponse = userServiceGrpcClient.getCompanyProfileById(recruiterId.toString());
+        Optional<CompanySummary> grpcResponse = userLookupSupport.fetchCompanyProfileTolerantly(recruiterId.toString());
 
         // If gRPC fails, DO NOT save to DB. Return a transient, in-memory fallback object.
         if (grpcResponse.isEmpty()) {
@@ -45,7 +47,7 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         }
 
         // If gRPC succeeds, map and persist permanently using TransactionTemplate
-        CompanyProfileGrpc grpcProfile = grpcResponse.get();
+        CompanySummary grpcProfile = grpcResponse.get();
         CompanyProfile profile = new CompanyProfile()
               .setRecruiterId(recruiterId)
               .setCompanyName(grpcProfile.getCompanyName())
@@ -63,6 +65,11 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
                        String companyLogo,
                        String eventId,
                        OffsetDateTime updatedAt) {
+        if (idempotencyGuard.isProcessed(eventId)) {
+            log.debug("Duplicate CompanyUpsertedEvent skipped: eventId={}", eventId);
+            return;
+        }
+
         companyProfileRepository.findById(recruiterId)
               .ifPresentOrElse(
                     existing -> {

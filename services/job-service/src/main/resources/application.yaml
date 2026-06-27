@@ -80,8 +80,7 @@ spring:
 kafka:
   topics:
     company:
-      company-created: company.profile.company-created
-      company-updated: company.profile.company-updated
+      company-upserted: company.profile.company-upserted
       company-deleted: company.profile.company-deleted
 
 app:
