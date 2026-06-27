@@ -2,9 +2,9 @@ package com.echcherqaoui.jobboard.jobservice.service.impl;
 
 import com.echcherqaoui.jobboard.commonoutbox.model.OutboxEvent;
 import com.echcherqaoui.jobboard.commonoutbox.repository.OutboxEventRepository;
-import com.echcherqaoui.jobboard.event.JobDeletedEvent;
-import com.echcherqaoui.jobboard.event.JobEvent;
-import com.echcherqaoui.jobboard.event.JobStatusChangedEvent;
+import com.echcherqaoui.jobboard.job.event.JobDeletedEvent;
+import com.echcherqaoui.jobboard.job.event.JobStatusChangedEvent;
+import com.echcherqaoui.jobboard.job.event.JobUpsertedEvent;
 import com.echcherqaoui.jobboard.jobservice.model.CompanyProfile;
 import com.echcherqaoui.jobboard.jobservice.model.Job;
 import com.echcherqaoui.jobboard.jobservice.model.JobSkill;
@@ -32,8 +32,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
     private final SignatureService signatureService;
 
     private static final String AGGREGATE_TYPE = "job";
-    private static final String EVENT_TYPE_JOB_CREATED = "job-created";
-    private static final String EVENT_TYPE_JOB_UPDATED = "job-updated";
+    private static final String EVENT_TYPE_JOB_UPSERTED = "job-upserted";
     private static final String EVENT_TYPE_JOB_DELETED = "job-deleted";
     private static final String EVENT_TYPE_JOB_STATUS_CHANGED = "job-status-changed";
     private static final String EVENT_TYPE_JOB_EXPIRED = "job-expired";
@@ -56,9 +55,8 @@ public class JobOutboxServiceImpl implements JobOutboxService {
         outboxEventRepository.save(outboxEvent);
     }
 
-    private void publishJobSnapshotEvent(@NonNull Job job,
-                                         @NonNull CompanyProfile companyProfile,
-                                         @NonNull String eventType) {
+    private void publishJobUpsertedEvent(@NonNull Job job,
+                                         @NonNull CompanyProfile companyProfile) {
         Instant now = Instant.now();
         String eventId = UUID.randomUUID().toString();
         String jobId = job.getId().toString();
@@ -80,9 +78,8 @@ public class JobOutboxServiceImpl implements JobOutboxService {
               .stream().map(JobSkill::getSkill)
               .toList();
 
-        JobEvent.Builder builder = JobEvent.newBuilder()
+        JobUpsertedEvent.Builder builder = JobUpsertedEvent.newBuilder()
               .setEventId(eventId)
-              .setEventType(eventType)
               .setJobId(jobId)
               .setRecruiterId(job.getRecruiterId().toString())
               .setCompanyName(companyProfile.getCompanyName())
@@ -109,7 +106,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
         persist(
               builder.build(),
               jobId,
-              eventType
+              EVENT_TYPE_JOB_UPSERTED
         );
     }
 
@@ -128,7 +125,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
               .setEventId(eventId)
               .setJobId(jobId)
               .setRecruiterId(job.getRecruiterId().toString())
-              .setStatus(job.getStatus().name())
+              .setJobStatus(job.getStatus().name())
               .setOccurredAt(InstantConverter.toTimestamp(now))
               .setSignature(signature)
               .build();
@@ -151,7 +148,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
               .setEventId(eventId)
               .setJobId(jobId)
               .setRecruiterId(job.getRecruiterId().toString())
-              .setStatus(job.getStatus().name())
+              .setJobStatus(job.getStatus().name())
               .setOccurredAt(InstantConverter.toTimestamp(now))
               .setSignature(signature)
               .build();
@@ -190,13 +187,8 @@ public class JobOutboxServiceImpl implements JobOutboxService {
     }
 
     @Override
-    public void publishJobCreated(Job job, CompanyProfile companyProfile) {
-        publishJobSnapshotEvent(job, companyProfile, EVENT_TYPE_JOB_CREATED);
-    }
-
-    @Override
-    public void publishJobUpdated(Job job, CompanyProfile companyProfile) {
-        publishJobSnapshotEvent(job, companyProfile, EVENT_TYPE_JOB_UPDATED);
+    public void publishJobUpserted(Job job, CompanyProfile companyProfile) {
+        publishJobUpsertedEvent(job, companyProfile);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.echcherqaoui.jobboard.searchservice.config;
 
-import com.echcherqaoui.jobboard.event.JobDeletedEvent;
-import com.echcherqaoui.jobboard.event.JobEvent;
-import com.echcherqaoui.jobboard.event.JobStatusChangedEvent;
+import com.echcherqaoui.jobboard.job.event.JobDeletedEvent;
+import com.echcherqaoui.jobboard.job.event.JobStatusChangedEvent;
+import com.echcherqaoui.jobboard.job.event.JobUpsertedEvent;
 import com.google.protobuf.Message;
 import io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer;
 import lombok.RequiredArgsConstructor;
@@ -76,8 +76,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, JobEvent> jobUpsertListenerContainerFactory(DefaultErrorHandler errorHandler) {
-        return buildFactory(buildConsumerFactory(JobEvent.class), errorHandler);
+    public ConcurrentKafkaListenerContainerFactory<String, JobUpsertedEvent> jobUpsertListenerContainerFactory(DefaultErrorHandler errorHandler) {
+        return buildFactory(buildConsumerFactory(JobUpsertedEvent.class), errorHandler);
     }
 
     @Bean

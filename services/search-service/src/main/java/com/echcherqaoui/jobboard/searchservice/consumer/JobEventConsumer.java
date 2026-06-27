@@ -1,9 +1,9 @@
 package com.echcherqaoui.jobboard.searchservice.consumer;
 
-import com.echcherqaoui.jobboard.event.JobDeletedEvent;
-import com.echcherqaoui.jobboard.event.JobEvent;
-import com.echcherqaoui.jobboard.event.JobStatusChangedEvent;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
+import com.echcherqaoui.jobboard.job.event.JobDeletedEvent;
+import com.echcherqaoui.jobboard.job.event.JobStatusChangedEvent;
+import com.echcherqaoui.jobboard.job.event.JobUpsertedEvent;
 import com.echcherqaoui.jobboard.searchservice.service.JobIndexService;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +44,11 @@ public class JobEventConsumer {
     }
 
     @KafkaListener(
-          topics = { "${kafka.topics.job.job-created}", "${kafka.topics.job.job-updated}" },
+          topics = { "${kafka.topics.job.job-upserted}"},
           groupId = "${spring.kafka.consumer.group-id}",
           containerFactory = "jobUpsertListenerContainerFactory"
     )
-    public void onJobSnapshot(@NonNull JobEvent event, Acknowledgment ack) {
+    public void onJobSnapshot(@NonNull JobUpsertedEvent event, Acknowledgment ack) {
 
         validateEvent(
               event.getEventId(),
@@ -75,7 +75,7 @@ public class JobEventConsumer {
               event.getSignature()
         );
 
-        jobIndexService.updateJobStatus(event.getJobId(), event.getStatus());
+        jobIndexService.updateJobStatus(event.getJobId(), event.getJobStatus());
 
         ack.acknowledge();
     }

@@ -1,7 +1,7 @@
 package com.echcherqaoui.jobboard.searchservice.service.impl;
 
 import co.elastic.clients.elasticsearch.core.UpdateResponse;
-import com.echcherqaoui.jobboard.event.JobEvent;
+import com.echcherqaoui.jobboard.job.event.JobUpsertedEvent;
 import com.echcherqaoui.jobboard.searchservice.document.JobDocument;
 import com.echcherqaoui.jobboard.searchservice.exception.domain.JobDocumentNotFoundException;
 import com.echcherqaoui.jobboard.searchservice.mapper.JobMapper;
@@ -23,7 +23,7 @@ public class JobIndexServiceImpl implements JobIndexService {
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Override
-    public void upsertJob(JobEvent event) {
+    public void upsertJob(JobUpsertedEvent event) {
         jobDocumentRepository.save(jobMapper.toDocument(event));
     }
 

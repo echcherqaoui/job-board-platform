@@ -88,7 +88,7 @@ public class JobServiceImpl implements JobService {
 
         CompanyProfile companyProfile = companyProfileService.getByRecruiterId(currentUserId);
 
-        jobOutboxService.publishJobCreated(saved, companyProfile);
+        jobOutboxService.publishJobUpserted(saved, companyProfile);
 
         return jobMapper.toResponse(saved, companyProfile);
     }
@@ -161,7 +161,7 @@ public class JobServiceImpl implements JobService {
 
         CompanyProfile companyProfile = companyProfileService.getByRecruiterId(currentUserId);
 
-        jobOutboxService.publishJobUpdated(saved, companyProfile);
+        jobOutboxService.publishJobUpserted(saved, companyProfile);
 
         return jobMapper.toResponse(saved, companyProfile);
     }

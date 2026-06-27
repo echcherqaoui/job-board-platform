@@ -64,22 +64,8 @@ resource "kafka_topic" "auth_recruiter_registered_dlt" {
 
 # COMPANY SERVICE TOPICS
 # ─────────────────────────────────────────────────────────────────────────────
-resource "kafka_topic" "company_profile_created" {
-  name               = "company.profile.company-created"
-  replication_factor = 1
-  partitions         = local.standard_partitions
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "company_profile_updated" {
-  name               = "company.profile.company-updated"
+resource "kafka_topic" "company_profile_upserted" {
+  name               = "company.profile.company-upserted"
   replication_factor = 1
   partitions         = local.standard_partitions
   config = {
@@ -106,22 +92,8 @@ resource "kafka_topic" "company_profile_deleted" {
   }
 }
 
-resource "kafka_topic" "company_profile_created_dlt" {
-  name               = "company.profile.company-created-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "company_profile_updated_dlt" {
-  name               = "company.profile.company-updated-dlt"
+resource "kafka_topic" "company_profile_upserted_dlt" {
+  name               = "company.profile.company-upserted-dlt"
   replication_factor = 1
   partitions         = 1
   config = {
@@ -150,22 +122,8 @@ resource "kafka_topic" "company_profile_deleted_dlt" {
 
 # JOB SERVICE TOPICS
 # ─────────────────────────────────────────────────────────────────────────────
-resource "kafka_topic" "job_events_job_created" {
-  name               = "job.events.job-created"
-  replication_factor = 1
-  partitions         = local.standard_partitions
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_updated" {
-  name               = "job.events.job-updated"
+resource "kafka_topic" "job_events_job_upserted" {
+  name               = "job.events.job-upserted"
   replication_factor = 1
   partitions         = local.standard_partitions
   config = {
@@ -220,8 +178,8 @@ resource "kafka_topic" "job_events_job_deleted" {
   }
 }
 
-resource "kafka_topic" "job_events_job_created_dlt" {
-  name               = "job.events.job-created-dlt"
+resource "kafka_topic" "job_events_job_upserted_dlt" {
+  name               = "job.events.job-upserted-dlt"
   replication_factor = 1
   partitions         = 1
   config = {

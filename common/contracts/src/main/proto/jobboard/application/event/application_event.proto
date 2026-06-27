@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package jobboard.application.event;
+
+option java_package = "com.echcherqaoui.jobboard.application.event";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+
+// Emitted by Application Service when a new application is submitted.
+message ApplicationSubmittedEvent {
+  string event_id = 1;
+  string application_id = 2;
+  string job_id = 3;
+  string job_title = 4;
+  string company_name = 5;
+  string applicant_id = 6;
+  google.protobuf.Timestamp submitted_at = 7;
+  google.protobuf.Timestamp occurred_at = 8;
+  string signature = 9;
+}
+
+// Emitted by Application Service when an application's status changes
+// via a direct, individual action (e.g. recruiter reviews one application).
+message ApplicationStatusChangedEvent {
+  string event_id = 1;
+  string application_id = 2;
+  string job_id = 3;
+  string job_title = 4;
+  string company_name = 5;
+  string applicant_id = 6;
+  string old_status = 7;
+  string new_status = 8;
+  string note = 9;
+  string changed_by = 10;
+  google.protobuf.Timestamp changed_at = 11;
+  google.protobuf.Timestamp occurred_at = 12;
+  string signature = 13;
+}
+
+// Emitted by Application Service when a job closure bulk-cancels all
+// PENDING applications for that job.
+message JobApplicationsCanceledEvent {
+  string event_id = 1;
+  string job_id = 2;
+  int32 affected_count = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+  string signature = 5;
+}

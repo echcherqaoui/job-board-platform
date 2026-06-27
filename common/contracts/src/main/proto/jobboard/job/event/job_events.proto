@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package jobboard.job.event;
+
+option java_package = "com.echcherqaoui.jobboard.job.event";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+message JobUpsertedEvent {
+  string event_id = 1;
+  string job_id = 2;
+  string recruiter_id = 3;
+  string company_name = 4;
+  string company_logo = 5;
+  string title = 6;
+  string description = 7;
+  string requirements = 8;
+  string location = 9;
+  string work_modality = 10;
+  string job_type = 11;
+  string experience_level = 12;
+  int64 salary_min_cents = 13;
+  int64 salary_max_cents = 14;
+  string currency = 15;
+  string status = 16;
+  repeated string skills = 17;
+  optional google.protobuf.Timestamp expires_at = 18;
+  google.protobuf.Timestamp created_at = 19;
+  google.protobuf.Timestamp occurred_at = 20;
+  string signature = 21;
+}
+
+message JobStatusChangedEvent {
+  string event_id = 1;
+  string job_id = 2;
+  string recruiter_id = 3;
+  string job_status = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  string signature = 6;
+}
+
+message JobDeletedEvent {
+  string event_id = 1;
+  string job_id = 2;
+  string recruiter_id = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+  string signature = 5;
+}
