@@ -74,10 +74,11 @@
                                 <schemaRegistryUrl>${schema.registry.url}</schemaRegistryUrl>
                             </schemaRegistryUrls>
                             <messagePath>src/main/proto</messagePath>
+
                             <subjects>
-                                <com.echcherqaoui.jobboard.UserCreatedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/user_events.proto
-                                </com.echcherqaoui.jobboard.UserCreatedEvent>
+                                <jobboard.auth.event.UserCreatedEvent>
+                                    src/main/proto/jobboard/auth/event/user_events.proto
+                                </jobboard.auth.event.UserCreatedEvent>
 
                                 <com.echcherqaoui.jobboard.CompanyCreatedEvent>
                                     src/main/proto/com/echcherqaoui/jobboard/company_created_event.proto
@@ -101,7 +102,7 @@
                             </subjects>
 
                             <schemaTypes>
-                                <com.echcherqaoui.jobboard.UserCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.UserCreatedEvent>
+                                <jobboard.auth.event.UserCreatedEvent>PROTOBUF</jobboard.auth.event.UserCreatedEvent>
 
                                 <com.echcherqaoui.jobboard.CompanyCreatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyCreatedEvent>
                                 <com.echcherqaoui.jobboard.CompanyUpdatedEvent> PROTOBUF </com.echcherqaoui.jobboard.CompanyUpdatedEvent>
@@ -113,7 +114,7 @@
                             </schemaTypes>
 
                             <compatibilityLevels>
-                                <com.echcherqaoui.jobboard.UserCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.UserCreatedEvent>
+                                <jobboard.auth.event.UserCreatedEvent>BACKWARD</jobboard.auth.event.UserCreatedEvent>
 
                                 <com.echcherqaoui.jobboard.CompanyCreatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyCreatedEvent>
                                 <com.echcherqaoui.jobboard.CompanyUpdatedEvent> BACKWARD </com.echcherqaoui.jobboard.CompanyUpdatedEvent>

@@ -1,4 +1,4 @@
-package com.echcherqaoui.jobboard.authservice.exception;
+package com.echcherqaoui.jobboard.authservice.exception.domain;
 
 import com.echcherqaoui.jobboard.exception.core.BaseCustomException;
 

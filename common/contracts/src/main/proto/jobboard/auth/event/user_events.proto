@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package com.echcherqaoui.jobboard;
+package jobboard.auth.event;
 
-option java_package = "com.echcherqaoui.jobboard.event";
-option java_outer_classname = "UserEventsProto";
+option java_package = "com.echcherqaoui.jobboard.auth.event";
 option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";

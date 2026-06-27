@@ -1,10 +1,10 @@
 package com.echcherqaoui.jobboard.authservice.service.impl;
 
+import com.echcherqaoui.jobboard.auth.event.UserCreatedEvent;
 import com.echcherqaoui.jobboard.authservice.model.AppUser;
 import com.echcherqaoui.jobboard.authservice.service.OutboxService;
 import com.echcherqaoui.jobboard.commonoutbox.model.OutboxEvent;
 import com.echcherqaoui.jobboard.commonoutbox.repository.OutboxEventRepository;
-import com.echcherqaoui.jobboard.event.UserCreatedEvent;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import com.echcherqaoui.jobboard.util.InstantConverter;
 import com.google.protobuf.Message;

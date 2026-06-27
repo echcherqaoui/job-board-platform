@@ -1,8 +1,8 @@
 package com.echcherqaoui.jobboard.authservice.service.impl;
 
 import com.echcherqaoui.jobboard.authservice.dto.CreateUserRequest;
-import com.echcherqaoui.jobboard.authservice.exception.PasswordMismatchException;
-import com.echcherqaoui.jobboard.authservice.exception.UserAlreadyExistsException;
+import com.echcherqaoui.jobboard.authservice.exception.domain.PasswordMismatchException;
+import com.echcherqaoui.jobboard.authservice.exception.domain.UserAlreadyExistsException;
 import com.echcherqaoui.jobboard.authservice.mapper.UserMapper;
 import com.echcherqaoui.jobboard.authservice.model.AppUser;
 import com.echcherqaoui.jobboard.authservice.repository.UserRepository;

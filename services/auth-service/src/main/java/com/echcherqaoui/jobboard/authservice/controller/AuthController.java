@@ -1,8 +1,8 @@
 package com.echcherqaoui.jobboard.authservice.controller;
 
 import com.echcherqaoui.jobboard.authservice.dto.CreateUserRequest;
-import com.echcherqaoui.jobboard.authservice.exception.PasswordMismatchException;
-import com.echcherqaoui.jobboard.authservice.exception.UserAlreadyExistsException;
+import com.echcherqaoui.jobboard.authservice.exception.domain.PasswordMismatchException;
+import com.echcherqaoui.jobboard.authservice.exception.domain.UserAlreadyExistsException;
 import com.echcherqaoui.jobboard.authservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
