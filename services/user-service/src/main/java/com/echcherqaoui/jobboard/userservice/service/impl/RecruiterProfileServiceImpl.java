@@ -3,8 +3,8 @@ package com.echcherqaoui.jobboard.userservice.service.impl;
 import com.echcherqaoui.jobboard.security.jwt.JwtContextHolder;
 import com.echcherqaoui.jobboard.userservice.dto.request.RecruiterProfileRequest;
 import com.echcherqaoui.jobboard.userservice.dto.response.RecruiterProfileResponse;
-import com.echcherqaoui.jobboard.userservice.exception.ProfileAlreadyOnboardedException;
-import com.echcherqaoui.jobboard.userservice.exception.ProfileNotFoundException;
+import com.echcherqaoui.jobboard.userservice.exception.domain.ProfileAlreadyOnboardedException;
+import com.echcherqaoui.jobboard.userservice.exception.domain.ProfileNotFoundException;
 import com.echcherqaoui.jobboard.userservice.mapper.RecruiterProfileMapper;
 import com.echcherqaoui.jobboard.userservice.model.RecruiterProfile;
 import com.echcherqaoui.jobboard.userservice.repository.RecruiterProfileRepository;
@@ -75,7 +75,7 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
 
         RecruiterProfile saved = recruiterProfileRepository.save(profile);
 
-        companyOutboxService.publishCompanyCreated(saved);
+        companyOutboxService.publishCompanyUpserted(saved);
 
         log.info("Successfully completed onboarding for recruiter user {}", userId);
     }
@@ -102,7 +102,7 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
         RecruiterProfile saved = recruiterProfileRepository.save(profile);
 
         if (companyChanged)
-            companyOutboxService.publishCompanyUpdated(saved);
+            companyOutboxService.publishCompanyUpserted(saved);
 
         log.info("Updated recruiter profile {}", userId);
 

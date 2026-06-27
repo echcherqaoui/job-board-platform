@@ -74,7 +74,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
-        specific.protobuf.value.type: com.echcherqaoui.jobboard.event.UserCreatedEvent
+        specific.protobuf.value.type: com.echcherqaoui.jobboard.auth.event.UserCreatedEvent
+
+# ── Web Servlet (Multipart/Uploads) ─────────────────────────
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
 # ── User Config ─────────────────────────────────────────────
 kafka:
@@ -87,3 +93,8 @@ app:
   security:
     hmac:
       secret: ${HMAC_SECRET_KEY}
+
+cloudinary:
+  cloud-name: ${CLOUD_NAME}
+  api-key: ${API_KEY}
+  api-secret: ${API_SECRET}

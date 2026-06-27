@@ -50,6 +50,8 @@ public class JobSeekerProfile {
 
     private String cvUrl;
 
+    private String cvPublicId;
+
     private String linkedinUrl;
 
     private String githubUrl;

@@ -16,7 +16,7 @@ import static com.echcherqaoui.jobboard.exception.core.CommonErrorCode.INTERNAL_
 @RestControllerAdvice
 @Slf4j
 @Order(10)
-public class ExceptionTranslator {
+public class UserExceptionHandler {
     // Searches logs by that ID to find the exact stack trace
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex,

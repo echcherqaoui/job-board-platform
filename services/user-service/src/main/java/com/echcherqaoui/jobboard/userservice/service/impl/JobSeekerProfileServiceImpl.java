@@ -7,8 +7,9 @@ import com.echcherqaoui.jobboard.userservice.dto.request.ExperienceRequest;
 import com.echcherqaoui.jobboard.userservice.dto.request.JobSeekerProfileRequest;
 import com.echcherqaoui.jobboard.userservice.dto.request.SkillRequest;
 import com.echcherqaoui.jobboard.userservice.dto.response.JobSeekerProfileResponse;
-import com.echcherqaoui.jobboard.userservice.exception.ProfileAlreadyOnboardedException;
-import com.echcherqaoui.jobboard.userservice.exception.ProfileNotFoundException;
+import com.echcherqaoui.jobboard.userservice.exception.domain.CvStorageException;
+import com.echcherqaoui.jobboard.userservice.exception.domain.ProfileAlreadyOnboardedException;
+import com.echcherqaoui.jobboard.userservice.exception.domain.ProfileNotFoundException;
 import com.echcherqaoui.jobboard.userservice.mapper.JobSeekerProfileMapper;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerEducation;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerExperience;
@@ -16,23 +17,33 @@ import com.echcherqaoui.jobboard.userservice.model.JobSeekerProfile;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerSkill;
 import com.echcherqaoui.jobboard.userservice.repository.JobSeekerProfileRepository;
 import com.echcherqaoui.jobboard.userservice.service.JobSeekerProfileService;
+import com.echcherqaoui.jobboard.userservice.storage.CvStorageClient;
+import com.echcherqaoui.jobboard.userservice.storage.CvUploadResult;
 import com.echcherqaoui.jobboard.userservice.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
+import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_EMPTY;
+import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_INVALID_TYPE;
+import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_NOT_FOUND;
+
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
 
     private final JobSeekerProfileRepository profileRepository;
+    private final CvStorageClient cvStorageClient;
     private final JobSeekerProfileMapper mapper;
     private final JwtContextHolder jwtContextHolder;
 
+    @NonNull
     private JobSeekerProfileResponse getUserProfileById(UUID userId) {
         return profileRepository.findById(userId)
               .map(mapper::toResponse)
@@ -69,6 +80,15 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
               req -> mapper.toEducationEntity(req).setProfile(profile),
               mapper::updateJobSeekerEducation
         );
+    }
+
+    private void validateCvFile(@NonNull MultipartFile file) {
+        if (file.isEmpty())
+            throw new CvStorageException(CV_EMPTY);
+
+        String contentType = file.getContentType();
+        if (!"application/pdf".equals(contentType))
+            throw new CvStorageException(CV_INVALID_TYPE, contentType);
     }
 
     @Transactional
@@ -147,6 +167,26 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
         return mapper.toResponse(saved);
     }
 
+    @Transactional
+    @Override
+    public String uploadCv(MultipartFile file) {
+        validateCvFile(file);
+
+        UUID userId = jwtContextHolder.getUserId();
+
+        JobSeekerProfile profile = profileRepository.findById(userId)
+              .orElseThrow(() -> new ProfileNotFoundException(userId));
+
+        CvUploadResult result = cvStorageClient.uploadCv(file, userId);
+
+        profile.setCvUrl(result.url());
+        profile.setCvPublicId(result.publicId());
+
+        profileRepository.save(profile);
+
+        return result.url();
+    }
+
     @Transactional(readOnly = true)
     @Override
     public JobSeekerProfileResponse getMyProfile() {
@@ -157,6 +197,24 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
     @Override
     public JobSeekerProfileResponse getProfileById(UUID userId) {
         return getUserProfileById(userId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCv() {
+        UUID userId = jwtContextHolder.getUserId();
+
+        JobSeekerProfile profile = profileRepository.findById(userId)
+              .orElseThrow(() -> new ProfileNotFoundException(userId));
+
+        if (profile.getCvPublicId() == null)
+            throw new CvStorageException(CV_NOT_FOUND, userId);
+
+        cvStorageClient.deleteCv(profile.getCvPublicId());
+
+        profile.setCvUrl(null);
+        profile.setCvPublicId(null);
+        profileRepository.save(profile);
     }
 
     @Transactional
