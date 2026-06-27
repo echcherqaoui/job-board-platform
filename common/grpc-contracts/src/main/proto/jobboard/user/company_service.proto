@@ -1,23 +1,27 @@
 syntax = "proto3";
 
-package user;
+package jobboard.user;
 
 option java_package = "com.echcherqaoui.jobboard.user.grpc";
-option java_outer_classname = "UserProfileProto";
+option java_outer_classname = "CompanyProfileProto";
 
 option java_multiple_files = true;
 
-service UserProfileService {
-  rpc GetCompanyProfileById(GetProfileByIdRequest)     returns (CompanyProfileGrpc);
+service CompanyProfileService {
+  rpc GetCompanyProfile(GetCompanyProfileRequest) returns (GetCompanyProfileResponse);
 }
 
 // ── Requests ─────────────────────────────────────────────────
-message GetProfileByIdRequest {
+message GetCompanyProfileRequest {
   string profile_id = 1;
 }
 
 // ── Responses ────────────────────────────────────────────────
-message CompanyProfileGrpc {
+message CompanySummary {
   string company_name = 1;
   string logo_url = 2;
+}
+
+message GetCompanyProfileResponse {
+  CompanySummary company = 1;
 }

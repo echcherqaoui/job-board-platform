@@ -29,7 +29,7 @@ public class GrpcServerExceptionHandler {
             case 401 -> UNAUTHENTICATED.withDescription(ex.getMessage());
             case 403 -> PERMISSION_DENIED.withDescription(ex.getMessage());
             case 404 -> NOT_FOUND.withDescription(ex.getMessage());
-            case 409 -> ALREADY_EXISTS.withDescription(ex.getMessage());
+            case 409, 422 -> ALREADY_EXISTS.withDescription(ex.getMessage());
             case 429 -> RESOURCE_EXHAUSTED.withDescription(ex.getMessage());
             default -> INTERNAL.withDescription(ex.getMessage());
         };

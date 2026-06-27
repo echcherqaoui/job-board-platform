@@ -1,8 +1,9 @@
 package com.echcherqaoui.jobboard.userservice.grpc;
 
-import com.echcherqaoui.jobboard.user.grpc.CompanyProfileGrpc;
-import com.echcherqaoui.jobboard.user.grpc.GetProfileByIdRequest;
-import com.echcherqaoui.jobboard.user.grpc.UserProfileServiceGrpc;
+import com.echcherqaoui.jobboard.user.grpc.CompanyProfileServiceGrpc;
+import com.echcherqaoui.jobboard.user.grpc.CompanySummary;
+import com.echcherqaoui.jobboard.user.grpc.GetCompanyProfileRequest;
+import com.echcherqaoui.jobboard.user.grpc.GetCompanyProfileResponse;
 import com.echcherqaoui.jobboard.userservice.model.RecruiterProfile;
 import com.echcherqaoui.jobboard.userservice.service.RecruiterProfileService;
 import io.grpc.stub.StreamObserver;
@@ -17,23 +18,28 @@ import java.util.UUID;
 @GrpcService
 @RequiredArgsConstructor
 @Slf4j
-public class UserProfileGrpcService extends UserProfileServiceGrpc.UserProfileServiceImplBase {
+public class UserProfileGrpcService extends CompanyProfileServiceGrpc.CompanyProfileServiceImplBase {
 
     private final RecruiterProfileService recruiterProfileService;
 
     @Override
     @PreAuthorize("hasAuthority('RECRUITER')")
-    public void getCompanyProfileById(@NonNull GetProfileByIdRequest request,
-                                      @NonNull StreamObserver<CompanyProfileGrpc> responseObserver) {
+    public void getCompanyProfile(@NonNull GetCompanyProfileRequest request,
+                                  @NonNull StreamObserver<GetCompanyProfileResponse> responseObserver) {
         RecruiterProfile profile = recruiterProfileService
               .getProfileEntityById(UUID.fromString(request.getProfileId()));
 
-        CompanyProfileGrpc response = CompanyProfileGrpc.newBuilder()
+        CompanySummary companySummary = CompanySummary.newBuilder()
               .setCompanyName(profile.getCompanyName() != null ? profile.getCompanyName() : "")
               .setLogoUrl(profile.getCompanyLogoUrl() != null ? profile.getCompanyLogoUrl() : "")
               .build();
 
+        GetCompanyProfileResponse response = GetCompanyProfileResponse.newBuilder()
+              .setCompany(companySummary)
+              .build();
+
         responseObserver.onNext(response);
+
         responseObserver.onCompleted();
     }
 }
