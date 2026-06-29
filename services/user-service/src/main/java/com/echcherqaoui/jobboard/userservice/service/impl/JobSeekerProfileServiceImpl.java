@@ -15,6 +15,7 @@ import com.echcherqaoui.jobboard.userservice.model.JobSeekerEducation;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerExperience;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerProfile;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerSkill;
+import com.echcherqaoui.jobboard.userservice.projection.JobSeekerSummaryProjection;
 import com.echcherqaoui.jobboard.userservice.repository.JobSeekerProfileRepository;
 import com.echcherqaoui.jobboard.userservice.service.JobSeekerProfileService;
 import com.echcherqaoui.jobboard.userservice.storage.CvStorageClient;
@@ -22,11 +23,13 @@ import com.echcherqaoui.jobboard.userservice.storage.CvUploadResult;
 import com.echcherqaoui.jobboard.userservice.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_EMPTY;
@@ -185,6 +188,23 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
         profileRepository.save(profile);
 
         return result.url();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public JobSeekerProfile findProfileById(UUID userId) {
+        JobSeekerProfile jobSeekerProfile = profileRepository.findById(userId)
+              .orElseThrow(() -> new ProfileNotFoundException(userId));
+
+        Hibernate.initialize(jobSeekerProfile.getSkills());
+
+        return jobSeekerProfile;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<JobSeekerSummaryProjection> findAllByUserIdIn(List<UUID> userId) {
+        return profileRepository.findByIdIn(userId);
     }
 
     @Transactional(readOnly = true)

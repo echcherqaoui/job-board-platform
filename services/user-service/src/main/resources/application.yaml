@@ -2,7 +2,7 @@
 server:
   port: ${USER_SERVICE_PORT}
 
-# ── gRPC Clients ──────────────────────────────────────────────
+# ── gRPC Server ──────────────────────────────────────────────
 grpc:
   server:
     port: ${USER_SERVICE_GRPC_PORT}

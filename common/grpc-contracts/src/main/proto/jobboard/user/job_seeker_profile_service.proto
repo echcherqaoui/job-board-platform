@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package jobboard.user;
+
+option java_package = "com.echcherqaoui.jobboard.user.grpc";
+option java_outer_classname = "JobSeekerProfileProto";
+
+option java_multiple_files = true;
+
+service JobSeekerProfileService {
+  rpc GetJobSeekerProfile (GetJobSeekerProfileRequest) returns (GetJobSeekerProfileResponse);
+  rpc BatchGetJobSeekerProfiles (BatchGetJobSeekerProfilesRequest) returns (BatchGetJobSeekerProfilesResponse);
+}
+
+// ── Requests ─────────────────────────────────────────────────
+message GetJobSeekerProfileRequest {
+  string user_id = 1;
+}
+
+message BatchGetJobSeekerProfilesRequest {
+  repeated string user_ids = 1;
+}
+
+// ── Responses ────────────────────────────────────────────────
+message JobSeekerProfileSummary {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string headline = 4;
+  string cv_url = 5;
+}
+
+message BatchGetJobSeekerProfilesResponse {
+  repeated JobSeekerProfileSummary profiles = 1;
+}
+
+message JobSeekerProfileDetail {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string headline = 5;
+  string location = 6;
+  string cv_url = 7;
+  int32 years_experience = 8;
+  repeated string skills = 9;
+}
+
+message GetJobSeekerProfileResponse {
+  JobSeekerProfileDetail profile = 1;
+}

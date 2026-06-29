@@ -51,6 +51,7 @@ public interface JobSeekerProfileMapper {
     @Mapping(target = "lastName", ignore = true)
     @Mapping(target = "email", ignore = true)
     @Mapping(target = "cvUrl", ignore = true)
+    @Mapping(target = "cvPublicId", ignore = true)
     @Mapping(target = "profilePicture", ignore = true)
     @Mapping(target = "skills", ignore = true)
     @Mapping(target = "experiences", ignore = true)
