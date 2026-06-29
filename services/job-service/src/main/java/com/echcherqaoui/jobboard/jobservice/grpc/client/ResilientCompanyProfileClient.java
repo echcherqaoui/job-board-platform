@@ -1,4 +1,4 @@
-package com.echcherqaoui.jobboard.jobservice.grpc;
+package com.echcherqaoui.jobboard.jobservice.grpc.client;
 
 import com.echcherqaoui.jobboard.exception.grpc.DownstreamDependencyException;
 import com.echcherqaoui.jobboard.user.grpc.CompanySummary;
@@ -12,12 +12,12 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UserLookupSupport {
-    private final UserServiceClient userServiceClient;
+public class ResilientCompanyProfileClient {
+    private final CompanyProfileClient companyProfileClient;
 
     public Optional<CompanySummary> fetchCompanyProfileTolerantly(String userId) {
         try {
-            return userServiceClient.getCompanyProfileById(userId);
+            return companyProfileClient.getCompanyProfileById(userId);
         } catch (DownstreamDependencyException ex) {
             Status.Code code = ex.getGrpcCode();
 

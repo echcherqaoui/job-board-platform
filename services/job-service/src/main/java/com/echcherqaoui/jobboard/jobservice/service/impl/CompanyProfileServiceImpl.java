@@ -1,6 +1,6 @@
 package com.echcherqaoui.jobboard.jobservice.service.impl;
 
-import com.echcherqaoui.jobboard.jobservice.grpc.UserLookupSupport;
+import com.echcherqaoui.jobboard.jobservice.grpc.client.ResilientCompanyProfileClient;
 import com.echcherqaoui.jobboard.jobservice.idempotency.IdempotencyGuard;
 import com.echcherqaoui.jobboard.jobservice.model.CompanyProfile;
 import com.echcherqaoui.jobboard.jobservice.repository.CompanyProfileRepository;
@@ -27,13 +27,13 @@ import static java.time.ZoneOffset.UTC;
 public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     private final CompanyProfileRepository companyProfileRepository;
-    private final UserLookupSupport userLookupSupport;
+    private final ResilientCompanyProfileClient resilientCompanyProfileClient;
     private final IdempotencyGuard idempotencyGuard;
 
     private CompanyProfile fetchFromGrpcAndCache(UUID recruiterId) {
         log.info("Cache miss for recruiter {} — executing gRPC backup fetch", recruiterId);
 
-        Optional<CompanySummary> grpcResponse = userLookupSupport.fetchCompanyProfileTolerantly(recruiterId.toString());
+        Optional<CompanySummary> grpcResponse = resilientCompanyProfileClient.fetchCompanyProfileTolerantly(recruiterId.toString());
 
         // If gRPC fails, DO NOT save to DB. Return a transient, in-memory fallback object.
         if (grpcResponse.isEmpty()) {

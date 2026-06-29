@@ -18,12 +18,12 @@ import java.util.UUID;
 @GrpcService
 @RequiredArgsConstructor
 @Slf4j
-public class UserProfileGrpcService extends CompanyProfileServiceGrpc.CompanyProfileServiceImplBase {
+public class CompanyProfileGrpcService extends CompanyProfileServiceGrpc.CompanyProfileServiceImplBase {
 
     private final RecruiterProfileService recruiterProfileService;
 
     @Override
-    @PreAuthorize("hasAuthority('RECRUITER')")
+    @PreAuthorize("hasRole('RECRUITER')")
     public void getCompanyProfile(@NonNull GetCompanyProfileRequest request,
                                   @NonNull StreamObserver<GetCompanyProfileResponse> responseObserver) {
         RecruiterProfile profile = recruiterProfileService
