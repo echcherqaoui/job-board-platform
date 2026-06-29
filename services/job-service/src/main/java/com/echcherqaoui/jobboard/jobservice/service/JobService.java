@@ -5,10 +5,12 @@ import com.echcherqaoui.jobboard.jobservice.dto.request.JobSearchCriteria;
 import com.echcherqaoui.jobboard.jobservice.dto.request.JobStatusUpdateRequest;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobResponse;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobSummaryResponse;
+import com.echcherqaoui.jobboard.jobservice.projection.JobSummaryProjection;
 import com.echcherqaoui.jobboard.sharedutils.dto.PaginatedResponse;
 import org.springframework.data.domain.Pageable;
-import org.springframework.lang.NonNull;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface JobService {
@@ -16,14 +18,18 @@ public interface JobService {
 
     PaginatedResponse<JobSummaryResponse> searchJobs(JobSearchCriteria criteria, Pageable pageable);
 
+    JobSummaryProjection findJobProjectionById(UUID jobId);
+
     JobResponse getJobById(UUID jobId);
+
+    List<JobSummaryProjection> getJobsSummaries(Set<UUID> jobIds);
 
     PaginatedResponse<JobSummaryResponse> getMyJobs(Pageable pageable);
 
     JobResponse updateJob(UUID jobId, JobRequest request);
 
     JobResponse updateJobStatus(UUID jobId,
-                                @NonNull JobStatusUpdateRequest request);
+                                JobStatusUpdateRequest request);
 
     void expireJobs();
 

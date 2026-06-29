@@ -5,12 +5,17 @@ api:
 server:
   port: ${JOB_SERVICE_PORT}
 
-# ── gRPC Clients ──────────────────────────────────────────────
+# ── gRPC ─────────────────────────────────────────────────────
 grpc:
+  # ── gRPC Clients ──────────────────────────────────────────────
   client:
     user-service:
       address: 'discovery:///user-service'
       negotiation-type: plaintext
+  # ── gRPC Server ──────────────────────────────────────────────
+  server:
+    port: ${JOB_SERVICE_GRPC_PORT}
+    address: 0.0.0.0
 
 # ── Service Discovery ─────────────────────────────────────────
 eureka:

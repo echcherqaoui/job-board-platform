@@ -11,6 +11,7 @@ import com.echcherqaoui.jobboard.jobservice.exception.domain.UnauthorizedJobAcce
 import com.echcherqaoui.jobboard.jobservice.mapper.JobMapper;
 import com.echcherqaoui.jobboard.jobservice.model.CompanyProfile;
 import com.echcherqaoui.jobboard.jobservice.model.Job;
+import com.echcherqaoui.jobboard.jobservice.projection.JobSummaryProjection;
 import com.echcherqaoui.jobboard.jobservice.repository.JobRepository;
 import com.echcherqaoui.jobboard.jobservice.repository.JobSpecification;
 import com.echcherqaoui.jobboard.jobservice.service.CompanyProfileService;
@@ -118,6 +119,7 @@ public class JobServiceImpl implements JobService {
         return PaginatedResponse.of(jobPage, responseFunction);
     }
 
+
     @Transactional(readOnly = true)
     @Override
     public JobResponse getJobById(UUID jobId) {
@@ -125,6 +127,19 @@ public class JobServiceImpl implements JobService {
               .orElseThrow(() -> new JobNotFoundException(jobId));
 
         return enrichWithCompany(job, job.getRecruiterId());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public JobSummaryProjection findJobProjectionById(UUID jobId) {
+        return jobRepository.findJobProjectionById(jobId)
+              .orElseThrow(() -> new JobNotFoundException(jobId));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<JobSummaryProjection> getJobsSummaries(Set<UUID> jobIds) {
+        return jobRepository.findByIdIn(jobIds);
     }
 
     @Transactional(readOnly = true)

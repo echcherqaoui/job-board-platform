@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package jobboard.job;
+
+option java_package = "com.echcherqaoui.jobboard.job.grpc";
+option java_outer_classname = "JobServiceProto";
+
+option java_multiple_files = true;
+
+service JobService {
+  rpc GetJobSummary (GetJobSummaryRequest) returns (GetJobSummaryResponse);
+  rpc BatchGetJobSummaries(BatchGetJobSummariesRequest) returns (BatchGetJobSummariesResponse);
+}
+
+// ── Requests ─────────────────────────────────────────────────
+message GetJobSummaryRequest {
+  string job_id = 1;
+}
+
+message BatchGetJobSummariesRequest {
+  repeated string job_ids = 1;
+}
+
+// ── Responses ────────────────────────────────────────────────
+message JobSummary {
+  string job_id = 1;
+  string recruiter_id = 2;
+  string company_name = 3;
+  string title = 4;
+  string job_status = 5;
+}
+
+message GetJobSummaryResponse {
+  JobSummary job = 1;
+}
+
+message BatchGetJobSummariesResponse {
+  repeated JobSummary jobs = 1;
+}

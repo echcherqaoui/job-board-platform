@@ -218,6 +218,7 @@ services:
     environment:
       # Server
       JOB_SERVICE_PORT: ${JOB_SERVICE_PORT}
+      JOB_SERVICE_GRPC_PORT: ${JOB_SERVICE_GRPC_PORT}
       MANAGEMENT_PORT: ${MANAGEMENT_PORT}
 
       # Discovery

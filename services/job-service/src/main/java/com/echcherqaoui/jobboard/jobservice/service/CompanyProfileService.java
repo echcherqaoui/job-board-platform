@@ -1,7 +1,6 @@
 package com.echcherqaoui.jobboard.jobservice.service;
 
 import com.echcherqaoui.jobboard.jobservice.model.CompanyProfile;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -22,6 +21,9 @@ public interface CompanyProfileService {
 
     Optional<CompanyProfile> findByRecruiterId(UUID recruiterId);
 
-    @Transactional(readOnly = true)
     Map<UUID, CompanyProfile> getProfilesByRecruiterId(Set<UUID> recruiterIds);
+
+    String getCompanyName(UUID recruiterId);
+
+    Map<UUID, String> getCompanyNames(Set<UUID> recruiterId);
 }

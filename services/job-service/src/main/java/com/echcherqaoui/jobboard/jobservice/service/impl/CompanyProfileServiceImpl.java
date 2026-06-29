@@ -137,4 +137,21 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
               .stream()
               .collect(Collectors.toMap(CompanyProfile::getRecruiterId, Function.identity()));
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public String getCompanyName(UUID recruiterId) {
+        return companyProfileRepository
+              .findCompanyNameByRecruiterId(recruiterId)
+              .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Map<UUID, String> getCompanyNames(Set<UUID> recruiterId) {
+        return companyProfileRepository
+              .findByRecruiterIdIn(recruiterId)
+              .stream()
+              .collect(Collectors.toMap(CompanyProfile::getRecruiterId, CompanyProfile::getCompanyName));
+    }
 }
