@@ -62,6 +62,11 @@ spring:
 # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+
+    listener:
+      concurrency: 3
+      ack-mode: manual_immediate
+
     properties:
       schema.registry.url: ${SC_REGISTRY_URL}
       value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
@@ -80,13 +85,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+        derive.type: true
 
 # ── Job Config ─────────────────────────────────────────────
 kafka:
   topics:
-    company:
-      company-upserted: company.profile.company-upserted
-      company-deleted: company.profile.company-deleted
+    user:
+      company-events: jobboard.events.company
 
 app:
   security:

@@ -64,8 +64,8 @@ resource "kafka_topic" "auth_recruiter_registered_dlt" {
 
 # COMPANY SERVICE TOPICS
 # ─────────────────────────────────────────────────────────────────────────────
-resource "kafka_topic" "company_profile_upserted" {
-  name               = "company.profile.company-upserted"
+resource "kafka_topic" "jobboard_events_company" {
+  name               = "jobboard.events.company"
   replication_factor = 1
   partitions         = local.standard_partitions
   config = {
@@ -78,22 +78,8 @@ resource "kafka_topic" "company_profile_upserted" {
   }
 }
 
-resource "kafka_topic" "company_profile_deleted" {
-  name               = "company.profile.company-deleted"
-  replication_factor = 1
-  partitions         = local.standard_partitions
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "company_profile_upserted_dlt" {
-  name               = "company.profile.company-upserted-dlt"
+resource "kafka_topic" "jobboard_events_company_dlt" {
+  name               = "jobboard.events.company-dlt"
   replication_factor = 1
   partitions         = 1
   config = {

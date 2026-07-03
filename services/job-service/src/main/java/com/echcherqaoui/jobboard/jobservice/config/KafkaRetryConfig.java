@@ -9,12 +9,14 @@ import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.DeserializationException;
+import org.springframework.lang.NonNull;
 import org.springframework.util.backoff.ExponentialBackOff;
 
 @Configuration
 @Slf4j
 public class KafkaRetryConfig {
 
+    @NonNull
     private static DefaultErrorHandler getHandler(DeadLetterPublishingRecoverer recoverer) {
         ExponentialBackOff backOff = new ExponentialBackOff();
         backOff.setInitialInterval(1_000L);

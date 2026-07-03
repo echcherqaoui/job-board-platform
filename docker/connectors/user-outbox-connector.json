@@ -22,8 +22,9 @@
     "transforms.outbox.table.field.event.key": "aggregate_id",
     "transforms.outbox.table.field.event.type": "event_type",
     "transforms.outbox.table.field.event.payload": "payload",
-    "transforms.outbox.route.by.field": "event_type",
-    "transforms.outbox.route.topic.replacement": "company.profile.${routedByValue}",
+
+    "transforms.outbox.route.by.field": "aggregate_type",
+    "transforms.outbox.route.topic.replacement": "jobboard.events.${routedByValue}",
     "transforms.outbox.table.expand.json.payload": "false",
 
     "value.converter": "io.debezium.converters.BinaryDataConverter",
