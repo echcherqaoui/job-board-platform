@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_EMPTY;
@@ -203,7 +204,7 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<JobSeekerSummaryProjection> findAllByUserIdIn(List<UUID> userId) {
+    public List<JobSeekerSummaryProjection> findAllByUserIdIn(Set<UUID> userId) {
         return profileRepository.findByIdIn(userId);
     }
 

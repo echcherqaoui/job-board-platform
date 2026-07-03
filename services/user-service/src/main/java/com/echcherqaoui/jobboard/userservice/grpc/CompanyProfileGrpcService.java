@@ -26,8 +26,11 @@ public class CompanyProfileGrpcService extends CompanyProfileServiceGrpc.Company
     @PreAuthorize("hasRole('RECRUITER')")
     public void getCompanyProfile(@NonNull GetCompanyProfileRequest request,
                                   @NonNull StreamObserver<GetCompanyProfileResponse> responseObserver) {
+        String profileId = request.getProfileId();
+        log.info("Received gRPC request to fetch company profile for ID: {}", profileId);
+
         RecruiterProfile profile = recruiterProfileService
-              .getProfileEntityById(UUID.fromString(request.getProfileId()));
+              .getProfileEntityById(UUID.fromString(profileId));
 
         CompanySummary companySummary = CompanySummary.newBuilder()
               .setCompanyName(profile.getCompanyName() != null ? profile.getCompanyName() : "")
@@ -39,7 +42,8 @@ public class CompanyProfileGrpcService extends CompanyProfileServiceGrpc.Company
               .build();
 
         responseObserver.onNext(response);
-
         responseObserver.onCompleted();
+
+        log.info("Successfully processed and returned company profile for ID: {}", profileId);
     }
 }

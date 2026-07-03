@@ -7,6 +7,7 @@ import com.echcherqaoui.jobboard.userservice.projection.JobSeekerSummaryProjecti
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface JobSeekerProfileService {
@@ -24,7 +25,7 @@ public interface JobSeekerProfileService {
 
     JobSeekerProfile findProfileById(UUID userId);
 
-    List<JobSeekerSummaryProjection> findAllByUserIdIn(List<UUID> userId);
+    List<JobSeekerSummaryProjection> findAllByUserIdIn(Set<UUID> userId);
 
     JobSeekerProfileResponse getMyProfile();
 

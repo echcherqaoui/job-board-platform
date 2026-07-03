@@ -56,6 +56,10 @@ spring:
 # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+
+    listener:
+      concurrency: 3
+
     properties:
       schema.registry.url: ${SC_REGISTRY_URL}
       value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
@@ -74,7 +78,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
-        specific.protobuf.value.type: com.echcherqaoui.jobboard.auth.event.UserCreatedEvent
+        derive.type: true
 
 # ── Web Servlet (Multipart/Uploads) ─────────────────────────
   servlet:
@@ -86,9 +90,7 @@ spring:
 kafka:
   topics:
     auth:
-      job-seeker-registered: auth.user.job-seeker-registered
-      recruiter-registered: auth.user.recruiter-registered
-
+      user-events: jobboard.events.auth
 app:
   security:
     hmac:

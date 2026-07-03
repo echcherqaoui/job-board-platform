@@ -19,7 +19,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -32,7 +34,11 @@ public class JobSeekerProfileGrpcService extends JobSeekerProfileServiceGrpc.Job
     @PreAuthorize("hasAnyRole('RECRUITER', 'CANDIDATE')")
     public void getJobSeekerProfile(@NonNull GetJobSeekerProfileRequest request,
                                     @NonNull StreamObserver<GetJobSeekerProfileResponse> responseObserver) {
-        JobSeekerProfile jobSeekerProfile = jobSeekerService.findProfileById(UUID.fromString(request.getUserId()));
+        String userId = request.getUserId();
+
+        log.info("Received gRPC request to fetch job seeker profile for user ID: {}", userId);
+
+        JobSeekerProfile jobSeekerProfile = jobSeekerService.findProfileById(UUID.fromString(userId));
 
         GetJobSeekerProfileResponse response = GetJobSeekerProfileResponse.newBuilder()
               .setProfile(grpcMapper.toGrpcDetail(jobSeekerProfile))
@@ -40,13 +46,17 @@ public class JobSeekerProfileGrpcService extends JobSeekerProfileServiceGrpc.Job
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
+        log.info("Successfully returned job seeker profile for user ID: {}", userId);
     }
 
     @Override
     @PreAuthorize("hasRole('RECRUITER')")
     public void batchGetJobSeekerProfiles(@NonNull BatchGetJobSeekerProfilesRequest request,
                                           @NonNull StreamObserver<BatchGetJobSeekerProfilesResponse> responseObserver) {
-        List<UUID> userIds = request.getUserIdsList().stream()
+        log.info("Received gRPC batch request to fetch job seeker profiles. Incoming count: {}", request.getUserIdsCount());
+
+        Set<UUID> userIds = request.getUserIdsList().stream()
               .map(id -> {
                   try {
                       return UUID.fromString(id);
@@ -55,7 +65,9 @@ public class JobSeekerProfileGrpcService extends JobSeekerProfileServiceGrpc.Job
                       return null;
                   }
               }).filter(Objects::nonNull)
-              .toList();
+              .collect(Collectors.toSet());
+
+        log.debug("Fetching summaries for {} valid user IDs from service layer", userIds.size());
 
         List<JobSeekerSummaryProjection> profiles = jobSeekerService.findAllByUserIdIn(userIds);
 
@@ -69,5 +81,7 @@ public class JobSeekerProfileGrpcService extends JobSeekerProfileServiceGrpc.Job
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
+        log.info("Successfully completed batch request. Returned {} profile summaries", summaries.size());
     }
 }

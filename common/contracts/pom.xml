@@ -76,9 +76,12 @@
                             <messagePath>src/main/proto</messagePath>
 
                             <subjects>
-                                <jobboard.auth.event.UserCreatedEvent>
+                                <jobboard.auth.event.JobSeekerRegisteredEvent>
                                     src/main/proto/jobboard/auth/event/user_events.proto
-                                </jobboard.auth.event.UserCreatedEvent>
+                                </jobboard.auth.event.JobSeekerRegisteredEvent>
+                                <jobboard.auth.event.RecruiterRegisteredEvent>
+                                    src/main/proto/jobboard/auth/event/user_events.proto
+                                </jobboard.auth.event.RecruiterRegisteredEvent>
 
                                 <jobboard.user.event.CompanyUpsertedEvent>
                                     src/main/proto/jobboard/user/event/company_events.proto
@@ -99,7 +102,8 @@
                             </subjects>
 
                             <schemaTypes>
-                                <jobboard.auth.event.UserCreatedEvent>PROTOBUF</jobboard.auth.event.UserCreatedEvent>
+                                <jobboard.auth.event.JobSeekerRegisteredEvent>PROTOBUF</jobboard.auth.event.JobSeekerRegisteredEvent>
+                                <jobboard.auth.event.RecruiterRegisteredEvent>PROTOBUF</jobboard.auth.event.RecruiterRegisteredEvent>
 
                                 <jobboard.user.event.CompanyUpsertedEvent>PROTOBUF</jobboard.user.event.CompanyUpsertedEvent>
                                 <jobboard.user.event.CompanyDeletedEvent>PROTOBUF</jobboard.user.event.CompanyDeletedEvent>
@@ -110,7 +114,8 @@
                             </schemaTypes>
 
                             <compatibilityLevels>
-                                <jobboard.auth.event.UserCreatedEvent>BACKWARD</jobboard.auth.event.UserCreatedEvent>
+                                <jobboard.auth.event.JobSeekerRegisteredEvent>BACKWARD</jobboard.auth.event.JobSeekerRegisteredEvent>
+                                <jobboard.auth.event.RecruiterRegisteredEvent>BACKWARD</jobboard.auth.event.RecruiterRegisteredEvent>
 
                                 <jobboard.user.event.CompanyUpsertedEvent>BACKWARD</jobboard.user.event.CompanyUpsertedEvent>
                                 <jobboard.user.event.CompanyDeletedEvent>BACKWARD</jobboard.user.event.CompanyDeletedEvent>
