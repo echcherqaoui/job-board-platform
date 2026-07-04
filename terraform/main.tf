@@ -94,8 +94,11 @@ resource "kafka_topic" "jobboard_events_job_dlt" {
   }
 }
 
-resource "kafka_topic" "job_events_job_expired" {
-  name               = "job.events.job-expired"
+
+# APPLICATION SERVICE TOPICS
+# ─────────────────────────────────────────────────────────────────────────────
+resource "kafka_topic" "jobboard_events_application" {
+  name               = "jobboard.events.application"
   replication_factor = 1
   partitions         = local.standard_partitions
   config = {
@@ -108,78 +111,8 @@ resource "kafka_topic" "job_events_job_expired" {
   }
 }
 
-resource "kafka_topic" "job_events_job_deleted" {
-  name               = "job.events.job-deleted"
-  replication_factor = 1
-  partitions         = local.standard_partitions
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_upserted_dlt" {
-  name               = "job.events.job-upserted-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_updated_dlt" {
-  name               = "job.events.job-updated-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_status_changed_dlt" {
-  name               = "job.events.job-status-changed-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_expired_dlt" {
-  name               = "job.events.job-expired-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "job_events_job_deleted_dlt" {
-  name               = "job.events.job-deleted-dlt"
+resource "kafka_topic" "jobboard_events_application_dlt" {
+  name               = "jobboard.events.application-dlt"
   replication_factor = 1
   partitions         = 1
   config = {
@@ -216,6 +149,16 @@ resource "kafka_topic" "debezium_heartbeat_company" {
 
 resource "kafka_topic" "debezium_heartbeat_job" {
   name               = "__debezium-heartbeat.job"
+  replication_factor = 1
+  partitions         = 1
+  config = {
+    "cleanup.policy" = "delete"
+    "retention.ms"   = local.retention_1_hour
+  }
+}
+
+resource "kafka_topic" "debezium_heartbeat_application" {
+  name               = "__debezium-heartbeat.application"
   replication_factor = 1
   partitions         = 1
   config = {

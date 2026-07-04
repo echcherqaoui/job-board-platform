@@ -99,6 +99,17 @@
                                 <jobboard.job.event.JobDeletedEvent>
                                     src/main/proto/jobboard/job/event/job_events.proto
                                 </jobboard.job.event.JobDeletedEvent>
+
+
+                                <jobboard.application.event.ApplicationSubmittedEvent>
+                                    src/main/proto/jobboard/application/event/application_events.proto
+                                </jobboard.application.event.ApplicationSubmittedEvent>
+                                <jobboard.application.event.ApplicationStatusChangedEvent>
+                                    src/main/proto/jobboard/application/event/application_events.proto
+                                </jobboard.application.event.ApplicationStatusChangedEvent>
+                                <jobboard.application.event.JobApplicationsCanceledEvent>
+                                    src/main/proto/jobboard/application/event/application_events.proto
+                                </jobboard.application.event.JobApplicationsCanceledEvent>
                             </subjects>
 
                             <schemaTypes>
@@ -111,6 +122,10 @@
                                 <jobboard.job.event.JobUpsertedEvent>PROTOBUF</jobboard.job.event.JobUpsertedEvent>
                                 <jobboard.job.event.JobStatusChangedEvent>PROTOBUF</jobboard.job.event.JobStatusChangedEvent>
                                 <jobboard.job.event.JobDeletedEvent>PROTOBUF</jobboard.job.event.JobDeletedEvent>
+
+                                <jobboard.application.event.ApplicationSubmittedEvent>PROTOBUF</jobboard.application.event.ApplicationSubmittedEvent>
+                                <jobboard.application.event.ApplicationStatusChangedEvent>PROTOBUF</jobboard.application.event.ApplicationStatusChangedEvent>
+                                <jobboard.application.event.JobApplicationsCanceledEvent>PROTOBUF</jobboard.application.event.JobApplicationsCanceledEvent>
                             </schemaTypes>
 
                             <compatibilityLevels>
@@ -123,6 +138,10 @@
                                 <jobboard.job.event.JobUpsertedEvent>BACKWARD</jobboard.job.event.JobUpsertedEvent>
                                 <jobboard.job.event.JobStatusChangedEvent>BACKWARD</jobboard.job.event.JobStatusChangedEvent>
                                 <jobboard.job.event.JobDeletedEvent>BACKWARD</jobboard.job.event.JobDeletedEvent>
+
+                                <jobboard.application.event.ApplicationSubmittedEvent>BACKWARD</jobboard.application.event.ApplicationSubmittedEvent>
+                                <jobboard.application.event.ApplicationStatusChangedEvent>BACKWARD</jobboard.application.event.ApplicationStatusChangedEvent>
+                                <jobboard.application.event.JobApplicationsCanceledEvent>BACKWARD</jobboard.application.event.JobApplicationsCanceledEvent>
                             </compatibilityLevels>
                         </configuration>
                     </plugin>

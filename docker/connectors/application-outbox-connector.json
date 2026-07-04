@@ -1,5 +1,5 @@
 {
-  "name": "job-outbox-connector",
+  "name": "application-outbox-connector",
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
     "tasks.max": "1",
@@ -9,12 +9,12 @@
     "database.port": "5432",
     "database.user": "${PG_USER}",
     "database.password": "${PG_PASSWORD}",
-    "database.dbname": "${JOB_DB}",
+    "database.dbname": "${APPLICATION_DB}",
 
-    "topic.prefix": "job",
+    "topic.prefix": "application",
     "table.include.list": "public.outbox_events",
-    "slot.name": "job_outbox_slot",
-    "publication.name": "job_outbox_publication",
+    "slot.name": "application_outbox_slot",
+    "publication.name": "application_outbox_publication",
 
     "transforms": "outbox",
     "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
