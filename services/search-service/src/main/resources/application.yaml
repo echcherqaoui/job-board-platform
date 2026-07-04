@@ -31,6 +31,11 @@ spring:
 # ── Kafka ─────────────────────────────────────────────────────
   kafka:
     bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+
+    listener:
+      concurrency: 3
+      ack-mode: manual_immediate
+
     properties:
       schema.registry.url: ${SC_REGISTRY_URL}
       value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
@@ -45,6 +50,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+        derive.type: true
 
 # ── Security ──────────────────────────────────────────────────
   security:
@@ -80,11 +86,7 @@ search:
 kafka:
   topics:
     job:
-      job-created: job.events.job-created
-      job-updated: job.events.job-updated
-      job-status-changed: job.events.job-status-changed
-      job-expired: job.events.job-expired
-      job-deleted: job.events.job-deleted
+      job-events: jobboard.events.job
 
 app:
   security:

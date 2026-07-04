@@ -197,7 +197,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
     }
 
     @Override
-    public void publishJobStatusChangedBatch(List<Job> jobs) {
+    public void publishJobExpiredBatch(@NonNull List<Job> jobs) {
         List<OutboxEvent> events = jobs.stream()
               .map(this::buildStatusChangedOutboxEvent)
               .toList();

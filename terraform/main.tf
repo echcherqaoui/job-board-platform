@@ -6,8 +6,8 @@ locals {
 
 # AUTH SERVICE TOPICS
 # ─────────────────────────────────────────────────────────────────────────────
-resource "kafka_topic" "auth_job_seeker_registered" {
-  name               = "auth.user.job-seeker-registered"
+resource "kafka_topic" "jobboard_events_auth" {
+  name               = "jobboard.events.auth"
   replication_factor = 1 # single broker — dev only, increase for production
   partitions         = local.standard_partitions
   config = {
@@ -20,38 +20,10 @@ resource "kafka_topic" "auth_job_seeker_registered" {
   }
 }
 
-resource "kafka_topic" "auth_recruiter_registered" {
-  name               = "auth.user.recruiter-registered"
-  replication_factor = 1
-  partitions         = local.standard_partitions
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "auth_job_seeker_registered_dlt" {
-  name               = "auth.user.job-seeker-registered-dlt"
+resource "kafka_topic" "jobboard_events_auth_dlt" {
+  name               = "jobboard.events.auth-dlt"
   replication_factor = 1
   partitions         = 1  # DLT need only 1 partition
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "kafka_topic" "auth_recruiter_registered_dlt" {
-  name               = "auth.user.recruiter-registered-dlt"
-  replication_factor = 1
-  partitions         = 1
   config = {
     "cleanup.policy" = "delete"
     "retention.ms"   = local.retention_7_days
@@ -92,24 +64,10 @@ resource "kafka_topic" "jobboard_events_company_dlt" {
   }
 }
 
-resource "kafka_topic" "company_profile_deleted_dlt" {
-  name               = "company.profile.company-deleted-dlt"
-  replication_factor = 1
-  partitions         = 1
-  config = {
-    "cleanup.policy" = "delete"
-    "retention.ms"   = local.retention_7_days
-  }
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 # JOB SERVICE TOPICS
 # ─────────────────────────────────────────────────────────────────────────────
-resource "kafka_topic" "job_events_job_upserted" {
-  name               = "job.events.job-upserted"
+resource "kafka_topic" "jobboard_events_job" {
+  name               = "jobboard.events.job"
   replication_factor = 1
   partitions         = local.standard_partitions
   config = {
@@ -122,10 +80,10 @@ resource "kafka_topic" "job_events_job_upserted" {
   }
 }
 
-resource "kafka_topic" "job_events_job_status_changed" {
-  name               = "job.events.job-status-changed"
+resource "kafka_topic" "jobboard_events_job_dlt" {
+  name               = "jobboard.events.job-dlt"
   replication_factor = 1
-  partitions         = local.standard_partitions
+  partitions         = 1
   config = {
     "cleanup.policy" = "delete"
     "retention.ms"   = local.retention_7_days

@@ -215,7 +215,7 @@ public class JobServiceImpl implements JobService {
 
         expired.forEach(job -> job.setStatus(CLOSED));
         jobRepository.saveAll(expired);
-        jobOutboxService.publishJobStatusChangedBatch(expired);
+        jobOutboxService.publishJobExpiredBatch(expired);
     }
 
     @Transactional

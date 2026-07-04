@@ -90,15 +90,15 @@
                                     src/main/proto/jobboard/user/event/company_events.proto
                                 </jobboard.user.event.CompanyDeletedEvent>
 
-                                <com.echcherqaoui.jobboard.JobEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/job_event.proto
-                                </com.echcherqaoui.jobboard.JobEvent>
-                                <com.echcherqaoui.jobboard.JobStatusChangedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/job_status_changed_event.proto
-                                </com.echcherqaoui.jobboard.JobStatusChangedEvent>
-                                <com.echcherqaoui.jobboard.JobDeletedEvent>
-                                    src/main/proto/com/echcherqaoui/jobboard/job_deleted_event.proto
-                                </com.echcherqaoui.jobboard.JobDeletedEvent>
+                                <jobboard.job.event.JobUpsertedEvent>
+                                    src/main/proto/jobboard/job/event/job_events.proto
+                                </jobboard.job.event.JobUpsertedEvent>
+                                <jobboard.job.event.JobStatusChangedEvent>
+                                    src/main/proto/jobboard/job/event/job_events.proto
+                                </jobboard.job.event.JobStatusChangedEvent>
+                                <jobboard.job.event.JobDeletedEvent>
+                                    src/main/proto/jobboard/job/event/job_events.proto
+                                </jobboard.job.event.JobDeletedEvent>
                             </subjects>
 
                             <schemaTypes>
@@ -108,9 +108,9 @@
                                 <jobboard.user.event.CompanyUpsertedEvent>PROTOBUF</jobboard.user.event.CompanyUpsertedEvent>
                                 <jobboard.user.event.CompanyDeletedEvent>PROTOBUF</jobboard.user.event.CompanyDeletedEvent>
 
-                                <com.echcherqaoui.jobboard.JobEvent> PROTOBUF </com.echcherqaoui.jobboard.JobEvent>
-                                <com.echcherqaoui.jobboard.JobStatusChangedEvent> PROTOBUF </com.echcherqaoui.jobboard.JobStatusChangedEvent>
-                                <com.echcherqaoui.jobboard.JobDeletedEvent> PROTOBUF </com.echcherqaoui.jobboard.JobDeletedEvent>
+                                <jobboard.job.event.JobUpsertedEvent>PROTOBUF</jobboard.job.event.JobUpsertedEvent>
+                                <jobboard.job.event.JobStatusChangedEvent>PROTOBUF</jobboard.job.event.JobStatusChangedEvent>
+                                <jobboard.job.event.JobDeletedEvent>PROTOBUF</jobboard.job.event.JobDeletedEvent>
                             </schemaTypes>
 
                             <compatibilityLevels>
@@ -120,9 +120,9 @@
                                 <jobboard.user.event.CompanyUpsertedEvent>BACKWARD</jobboard.user.event.CompanyUpsertedEvent>
                                 <jobboard.user.event.CompanyDeletedEvent>BACKWARD</jobboard.user.event.CompanyDeletedEvent>
 
-                                <com.echcherqaoui.jobboard.JobEvent> BACKWARD </com.echcherqaoui.jobboard.JobEvent>
-                                <com.echcherqaoui.jobboard.JobStatusChangedEvent> BACKWARD </com.echcherqaoui.jobboard.JobStatusChangedEvent>
-                                <com.echcherqaoui.jobboard.JobDeletedEvent> BACKWARD </com.echcherqaoui.jobboard.JobDeletedEvent>
+                                <jobboard.job.event.JobUpsertedEvent>BACKWARD</jobboard.job.event.JobUpsertedEvent>
+                                <jobboard.job.event.JobStatusChangedEvent>BACKWARD</jobboard.job.event.JobStatusChangedEvent>
+                                <jobboard.job.event.JobDeletedEvent>BACKWARD</jobboard.job.event.JobDeletedEvent>
                             </compatibilityLevels>
                         </configuration>
                     </plugin>

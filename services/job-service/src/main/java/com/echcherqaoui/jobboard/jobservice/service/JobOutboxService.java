@@ -11,7 +11,7 @@ public interface JobOutboxService {
 
     void publishJobStatusChanged(Job job);
 
-    void publishJobStatusChangedBatch(List<Job> jobs);
+    void publishJobExpiredBatch(List<Job> jobs);
 
     void publishJobDeleted(Job job);
 }

@@ -38,6 +38,8 @@ public class CompanyProfileClient {
      * Returns empty if not found or if User Service is unreachable.
      */
     public Optional<CompanySummary> getCompanyProfileById(@NonNull String profileId) {
+        log.info("Sending gRPC request to user-service to fetch company profile for ID: {}", profileId);
+
         try {
             GetCompanyProfileResponse response = companyStub.withDeadlineAfter(Duration.ofMillis(3000))
                   .getCompanyProfile(
@@ -46,12 +48,20 @@ public class CompanyProfileClient {
                               .build()
                   );
 
-            return response.hasCompany() ? Optional.of(response.getCompany()) : Optional.empty();
+            if (response.hasCompany()) {
+                log.info("Successfully fetched company profile for ID: {}", profileId);
+                return Optional.of(response.getCompany());
+            }
+
+            log.warn("gRPC response empty for company profile ID: {}", profileId);
+            return Optional.empty();
         } catch (StatusRuntimeException ex) {
             UUID id = UUID.fromString(profileId);
-            if (ex.getStatus().getCode() == Status.Code.NOT_FOUND)
-                // No profile exists for this user
+
+            if (ex.getStatus().getCode() == Status.Code.NOT_FOUND) {
+                log.warn("Company profile not found in user-service for ID: {}", profileId);
                 throw new CompanyProfileNotFoundException(id);
+            }
 
             log.warn(
                   "Could not fetch company profile {}: {} - {}",

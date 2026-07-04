@@ -36,6 +36,7 @@ public class JobGrpcService extends JobServiceGrpc.JobServiceImplBase {
     @PreAuthorize("hasAnyRole('RECRUITER', 'CANDIDATE')")
     public void getJobSummary(@NonNull GetJobSummaryRequest request,
                               @NonNull StreamObserver<GetJobSummaryResponse> responseObserver) {
+        log.info("Received gRPC request to fetch job summary for ID: {}", request.getJobId());
 
         UUID jobId = UUID.fromString(request.getJobId());
 
@@ -49,12 +50,15 @@ public class JobGrpcService extends JobServiceGrpc.JobServiceImplBase {
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
+        log.info("Successfully returned job summary for ID: {}", jobId);
     }
 
     @Override
     @PreAuthorize("hasAnyRole('RECRUITER', 'CANDIDATE')")
     public void batchGetJobSummaries(@NonNull BatchGetJobSummariesRequest request,
                                      @NonNull StreamObserver<BatchGetJobSummariesResponse> responseObserver) {
+        log.info("Received gRPC batch request to fetch job summaries. Incoming count: {}", request.getJobIdsCount());
 
         Set<UUID> jobIds = request.getJobIdsList().stream()
               .map(id -> {
@@ -66,6 +70,8 @@ public class JobGrpcService extends JobServiceGrpc.JobServiceImplBase {
                   }
               }).filter(Objects::nonNull)
               .collect(Collectors.toSet());
+
+        log.debug("Fetching summaries for {} valid job IDs from service layer", jobIds.size());
 
         List<JobSummaryProjection> jobs = jobService.getJobsSummaries(jobIds);
 
@@ -85,5 +91,7 @@ public class JobGrpcService extends JobServiceGrpc.JobServiceImplBase {
 
         responseObserver.onNext(response);
         responseObserver.onCompleted();
+
+        log.info("Successfully completed batch request. Returned {} job summaries", summaries.size());
     }
 }
