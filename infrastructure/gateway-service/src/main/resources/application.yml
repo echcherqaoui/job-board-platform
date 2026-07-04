@@ -50,6 +50,12 @@ spring:
               predicates:
                 - Path=/api/v1/search/**
 
+            # SEARCH SERVICE
+            - id: application-service
+              uri: lb://application-service
+              predicates:
+                - Path=/api/v1/applications/**
+
 # ── Service Discovery ───────────────────────────────────────────
 eureka:
   instance:

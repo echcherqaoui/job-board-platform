@@ -282,3 +282,40 @@ services:
     networks:
       - job-board-net
     restart: unless-stopped
+
+  application-service:
+    build:
+      context: ../services/application-service
+      dockerfile: Dockerfile
+    container_name: application-service-job-board
+    environment:
+      # Server
+      APPLICATION_SERVICE_PORT: ${APPLICATION_SERVICE_PORT}
+      MANAGEMENT_PORT: ${MANAGEMENT_PORT}
+
+      # Discovery
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Database
+      DATASOURCE_URL: jdbc:postgresql://${PG_HOST}:${PG_PORT}/${APPLICATION_DB}
+      DATASOURCE_USERNAME: ${PG_USER}
+      DATASOURCE_PASSWORD: ${PG_PASSWORD}
+
+      # Security
+      JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      HMAC_SECRET_KEY: ${SECRET_KEY}
+
+      # Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
+      KF_CONSUMER_GROUP_ID: ${KF_JOB_CONSUMER_GROUP_ID}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
