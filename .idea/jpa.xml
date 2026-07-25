@@ -2,6 +2,6 @@
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig" newRepositoryParent="org.springframework.data.jpa.repository.JpaRepository" />
   <component name="JpaPluginProjectSettings">
-    <option name="lastSelectedLanguage" value="Kotlin" />
+    <option name="lastSelectedLanguage" value="Java" />
   </component>
 </project>

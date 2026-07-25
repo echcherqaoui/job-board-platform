@@ -1,8 +1,9 @@
-package com.echcherqaoui.jobboard.userservice.kafka.handler;
+package com.echcherqaoui.jobboard.userservice.kafka.handler.impl;
 
 import com.echcherqaoui.jobboard.auth.event.RecruiterRegisteredEvent;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
+import com.echcherqaoui.jobboard.userservice.kafka.handler.AuthHandler;
 import com.echcherqaoui.jobboard.userservice.service.RecruiterProfileService;
 import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class RecruiterRegisteredHandler implements AuthEventHandler {
+public class RecruiterRegisteredHandler implements AuthHandler {
 
     private final RecruiterProfileService recruiterService;
     private final SignatureService signatureService;
