@@ -8,4 +8,5 @@ public interface JobSeekerSummaryProjection {
     String getLastName();
     String getHeadline();
     String getCvUrl();
+    String getEmail();
 }

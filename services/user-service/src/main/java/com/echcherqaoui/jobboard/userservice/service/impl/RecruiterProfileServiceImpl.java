@@ -118,8 +118,14 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService {
 
     @Transactional(readOnly = true)
     @Override
+    public String getProfileEmailById(UUID id) {
+        return recruiterProfileRepository.findEmailById(id)
+              .orElseThrow(() -> new ProfileNotFoundException(RECRUITER_NOT_EXISTS, id));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public RecruiterProfileResponse getRecruiterById(UUID id) {
         return getById(id);
     }
-
 }

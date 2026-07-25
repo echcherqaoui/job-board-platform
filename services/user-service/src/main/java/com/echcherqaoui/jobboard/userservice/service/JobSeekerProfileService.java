@@ -4,6 +4,7 @@ import com.echcherqaoui.jobboard.userservice.dto.request.JobSeekerProfileRequest
 import com.echcherqaoui.jobboard.userservice.dto.response.JobSeekerProfileResponse;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerProfile;
 import com.echcherqaoui.jobboard.userservice.projection.JobSeekerSummaryProjection;
+import com.echcherqaoui.jobboard.userservice.projection.UserEmailProjection;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -31,7 +32,12 @@ public interface JobSeekerProfileService {
 
     JobSeekerProfileResponse getProfileById(UUID userId);
 
+    String getProfileEmailById(UUID uuid);
+
+    List<UserEmailProjection> getEmailAndIdByUserIds(Set<UUID> ids);
+
     void deleteCv();
 
     void deleteProfile();
+
 }

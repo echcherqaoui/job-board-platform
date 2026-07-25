@@ -41,6 +41,7 @@ public class JobSeekerProfileGrpcMapper {
               .setLastName(entity.getLastName())
               .setHeadline(nullToEmpty(entity.getHeadline()))
               .setCvUrl(nullToEmpty(entity.getCvUrl()))
+              .setEmail(entity.getEmail())
               .build();
     }
 }

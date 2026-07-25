@@ -16,6 +16,7 @@ import com.echcherqaoui.jobboard.userservice.model.JobSeekerExperience;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerProfile;
 import com.echcherqaoui.jobboard.userservice.model.JobSeekerSkill;
 import com.echcherqaoui.jobboard.userservice.projection.JobSeekerSummaryProjection;
+import com.echcherqaoui.jobboard.userservice.projection.UserEmailProjection;
 import com.echcherqaoui.jobboard.userservice.repository.JobSeekerProfileRepository;
 import com.echcherqaoui.jobboard.userservice.service.JobSeekerProfileService;
 import com.echcherqaoui.jobboard.userservice.storage.CvStorageClient;
@@ -36,6 +37,7 @@ import java.util.UUID;
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_EMPTY;
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_INVALID_TYPE;
 import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.CV_NOT_FOUND;
+import static com.echcherqaoui.jobboard.userservice.exception.enums.UserErrorCode.RECRUITER_NOT_EXISTS;
 
 @Service
 @Slf4j
@@ -218,6 +220,19 @@ public class JobSeekerProfileServiceImpl implements JobSeekerProfileService {
     @Override
     public JobSeekerProfileResponse getProfileById(UUID userId) {
         return getUserProfileById(userId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public String getProfileEmailById(UUID id) {
+        return profileRepository.findEmailById(id)
+              .orElseThrow(() -> new ProfileNotFoundException(RECRUITER_NOT_EXISTS, id));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<UserEmailProjection> getEmailAndIdByUserIds(Set<UUID> ids) {
+        return profileRepository.findEmailsByUserIds(ids);
     }
 
     @Transactional

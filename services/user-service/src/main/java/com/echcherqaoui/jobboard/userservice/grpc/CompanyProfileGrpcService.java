@@ -4,6 +4,8 @@ import com.echcherqaoui.jobboard.user.grpc.CompanyProfileServiceGrpc;
 import com.echcherqaoui.jobboard.user.grpc.CompanySummary;
 import com.echcherqaoui.jobboard.user.grpc.GetCompanyProfileRequest;
 import com.echcherqaoui.jobboard.user.grpc.GetCompanyProfileResponse;
+import com.echcherqaoui.jobboard.user.grpc.GetRecruiterEmailRequest;
+import com.echcherqaoui.jobboard.user.grpc.GetRecruiterEmailResponse;
 import com.echcherqaoui.jobboard.userservice.model.RecruiterProfile;
 import com.echcherqaoui.jobboard.userservice.service.RecruiterProfileService;
 import io.grpc.stub.StreamObserver;
@@ -45,5 +47,26 @@ public class CompanyProfileGrpcService extends CompanyProfileServiceGrpc.Company
         responseObserver.onCompleted();
 
         log.info("Successfully processed and returned company profile for ID: {}", profileId);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_INTERNAL')")
+    public void getRecruiterEmail(@NonNull GetRecruiterEmailRequest request,
+                                  @NonNull StreamObserver<GetRecruiterEmailResponse> responseObserver) {
+
+        String profileId = request.getProfileId();
+
+        log.info("Received gRPC request to fetch recruiter email for ID: {}", profileId);
+
+        String email = recruiterProfileService.getProfileEmailById(UUID.fromString(profileId));
+
+        GetRecruiterEmailResponse response = GetRecruiterEmailResponse.newBuilder()
+              .setEmail(email)
+              .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+
+        log.info("Successfully processed and returned recruiter email for ID: {}", profileId);
     }
 }
