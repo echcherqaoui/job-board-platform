@@ -111,7 +111,7 @@ public class ApplicationDataAccess {
     }
 
     @Transactional
-    public void bulkRejectAndExecute(UUID jobId) {
+    public void bulkRejectAndExecute(UUID jobId, String jobTitle) {
         List<Application> pending = applicationRepository.findByJobIdAndStatus(jobId, PENDING);
 
         if (pending.isEmpty()) {
@@ -133,15 +133,18 @@ public class ApplicationDataAccess {
             app.getStatusHistory().add(history);
         });
 
-        applicationRepository.saveAll(pending);
+        List<Application> saved = applicationRepository.saveAll(pending);
 
-        int affectedCount = pending.size();
-
+        List<String> applicantIds = saved.stream()
+              .map(application -> application.getApplicantId().toString())
+              .toList();
+        
         applicationOutboxService.publishJobApplicationsCanceled(
               jobId,
-              affectedCount
+              jobTitle,
+              applicantIds
         );
 
-        log.info("Rejected {} PENDING applications for closed job {}", affectedCount, jobId);
+        log.info("Rejected {} PENDING applications for closed job {}", saved.size(), jobId);
     }
 }

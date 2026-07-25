@@ -9,6 +9,7 @@ import com.echcherqaoui.jobboard.applicationservice.service.ApplicationOutboxSer
 import com.echcherqaoui.jobboard.commonoutbox.model.OutboxEvent;
 import com.echcherqaoui.jobboard.commonoutbox.repository.OutboxEventRepository;
 import com.echcherqaoui.jobboard.job.grpc.JobSummary;
+import com.echcherqaoui.jobboard.security.jwt.JwtContextHolder;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import com.echcherqaoui.jobboard.util.InstantConverter;
 import com.google.protobuf.Message;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +30,7 @@ public class ApplicationOutboxServiceImpl implements ApplicationOutboxService {
     private final OutboxEventRepository outboxEventRepository;
     private final KafkaProtobufSerializer<Message> serializer;
     private final SignatureService signatureService;
+    private final JwtContextHolder jwtContextHolder;
 
     private static final String AGGREGATE_TYPE = "application";
     private static final String EVENT_TYPE_APPLICATION_SUBMITTED = "application-submitted";
@@ -73,7 +76,8 @@ public class ApplicationOutboxServiceImpl implements ApplicationOutboxService {
               .setApplicationId(applicationId)
               .setJobId(application.getJobId().toString())
               .setJobTitle(job.getTitle())
-              .setCompanyName(job.getCompanyName())
+              .setRecruiterId(job.getRecruiterId())
+              .setApplicantName(jwtContextHolder.getFullName())
               .setApplicantId(application.getApplicantId().toString())
               .setSubmittedAt(InstantConverter.toTimestamp(submittedAt))
               .setOccurredAt(InstantConverter.toTimestamp(now))
@@ -92,7 +96,7 @@ public class ApplicationOutboxServiceImpl implements ApplicationOutboxService {
                                                 @NonNull ApplicationStatus oldStatus,
                                                 @NonNull ApplicationStatus newStatus,
                                                 @NonNull JobSummary jobSummary,
-                                                UUID callerId,
+                                                @NonNull UUID callerId,
                                                 String note) {
         Instant now = Instant.now();
         String eventId = UUID.randomUUID().toString();
@@ -128,7 +132,9 @@ public class ApplicationOutboxServiceImpl implements ApplicationOutboxService {
     }
 
     @Override
-    public void publishJobApplicationsCanceled(@NonNull UUID jobId, int affectedCount) {
+    public void publishJobApplicationsCanceled(@NonNull UUID jobId,
+                                               String jobTitle,
+                                               List<String> applicantIds) {
         Instant now = Instant.now();
         String eventId = UUID.randomUUID().toString();
         String jobIdStr = jobId.toString();
@@ -142,7 +148,8 @@ public class ApplicationOutboxServiceImpl implements ApplicationOutboxService {
         JobApplicationsCanceledEvent event = JobApplicationsCanceledEvent.newBuilder()
               .setEventId(eventId)
               .setJobId(jobIdStr)
-              .setAffectedCount(affectedCount)
+              .setJobTitle(jobTitle)
+              .addAllApplicantIds(applicantIds)
               .setOccurredAt(InstantConverter.toTimestamp(now))
               .setSignature(signature)
               .build();

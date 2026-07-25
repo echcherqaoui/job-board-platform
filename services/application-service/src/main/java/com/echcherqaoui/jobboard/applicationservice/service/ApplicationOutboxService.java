@@ -4,6 +4,7 @@ import com.echcherqaoui.jobboard.applicationservice.model.Application;
 import com.echcherqaoui.jobboard.applicationservice.model.ApplicationStatus;
 import com.echcherqaoui.jobboard.job.grpc.JobSummary;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface ApplicationOutboxService {
@@ -17,5 +18,7 @@ public interface ApplicationOutboxService {
                                          UUID callerId,
                                          String note);
 
-    void publishJobApplicationsCanceled(UUID jobId, int affectedCount);
+    void publishJobApplicationsCanceled(UUID jobId,
+                                        String jobTitle,
+                                        List<String> applicantIds);
 }
