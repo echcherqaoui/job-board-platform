@@ -9,10 +9,15 @@ option java_multiple_files = true;
 
 service CompanyProfileService {
   rpc GetCompanyProfile(GetCompanyProfileRequest) returns (GetCompanyProfileResponse);
+  rpc GetRecruiterEmail(GetRecruiterEmailRequest) returns (GetRecruiterEmailResponse);
 }
 
 // ── Requests ─────────────────────────────────────────────────
 message GetCompanyProfileRequest {
+  string profile_id = 1;
+}
+
+message GetRecruiterEmailRequest {
   string profile_id = 1;
 }
 
@@ -24,4 +29,8 @@ message CompanySummary {
 
 message GetCompanyProfileResponse {
   CompanySummary company = 1;
+}
+
+message GetRecruiterEmailResponse {
+  string email = 1;
 }
