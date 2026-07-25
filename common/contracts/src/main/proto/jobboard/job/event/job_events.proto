@@ -38,6 +38,7 @@ message JobStatusChangedEvent {
   string job_status = 4;
   google.protobuf.Timestamp occurred_at = 5;
   string signature = 6;
+  string job_title = 7;
 }
 
 message JobDeletedEvent {
