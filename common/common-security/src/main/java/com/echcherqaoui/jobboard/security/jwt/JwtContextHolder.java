@@ -28,6 +28,22 @@ public class JwtContextHolder {
         return email;
     }
 
+    public String getFullName() {
+        Jwt jwt = getJwt();
+        String givenName = jwt.getClaimAsString("given_name");
+        String familyName = jwt.getClaimAsString("family_name");
+
+        if (givenName != null || familyName != null)
+            return String.join(" ",
+                  givenName != null ? givenName : "",
+                  familyName != null ? familyName : ""
+            ).trim();
+
+        // 3. Fallback to username or subject (sub)
+        String username = jwt.getClaimAsString("preferred_username");
+        return (username != null && !username.isBlank()) ? username : jwt.getSubject();
+    }
+
     public AuthenticatedUser getAuthenticatedUser() {
         Jwt jwt = getJwt();
         String email = jwt.getClaimAsString("email");
