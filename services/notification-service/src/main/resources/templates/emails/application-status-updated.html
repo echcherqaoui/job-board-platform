@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{emails/email-layout}">
+<head><title>Application Update</title></head>
+<body>
+<div layout:fragment="content">
+
+    <p class="greeting">Hello,</p>
+
+    <!-- ACCEPTED -->
+    <div th:if="${#strings.toUpperCase(newStatus) == 'ACCEPTED'}">
+        <p>
+            🎉 Congratulations! We have great news regarding your application
+            for <strong th:text="${jobTitle}">Senior Java Developer</strong>
+            at <strong th:text="${companyName}">Acme Corp</strong>.
+        </p>
+        <div class="card">
+            <p><strong>Position:</strong> <span th:text="${jobTitle}">Senior Java Developer</span></p>
+            <p><strong>Company:</strong> <span th:text="${companyName}">Acme Corp</span></p>
+            <p><strong>Status:</strong> <span class="badge badge-accepted">Accepted</span></p>
+            <p th:if="${note != null and !#strings.isEmpty(note)}">
+                <strong>Message from company:</strong> <span th:text="${note}"></span>
+            </p>
+        </div>
+        <p>The hiring team will be in touch with you soon regarding next steps.</p>
+    </div>
+
+    <!-- REVIEWED -->
+    <div th:if="${#strings.toUpperCase(newStatus) == 'REVIEWED'}">
+        <p>
+            Your application for <strong th:text="${jobTitle}">Senior Java Developer</strong>
+            at <strong th:text="${companyName}">Acme Corp</strong> is currently being reviewed
+            by the hiring team.
+        </p>
+        <div class="card">
+            <p><strong>Position:</strong> <span th:text="${jobTitle}">Senior Java Developer</span></p>
+            <p><strong>Company:</strong> <span th:text="${companyName}">Acme Corp</span></p>
+            <p><strong>Status:</strong> <span class="badge badge-reviewed">Under Review</span></p>
+        </div>
+        <p>We'll notify you as soon as there's an update. Hang tight!</p>
+    </div>
+
+    <!-- REJECTED -->
+    <div th:if="${#strings.toUpperCase(newStatus) == 'REJECTED'}">
+        <p>
+            Thank you for your interest in <strong th:text="${jobTitle}">Senior Java Developer</strong>
+            at <strong th:text="${companyName}">Acme Corp</strong>. After careful consideration,
+            the hiring team has decided to move forward with other candidates at this time.
+        </p>
+        <div class="card">
+            <p><strong>Position:</strong> <span th:text="${jobTitle}">Senior Java Developer</span></p>
+            <p><strong>Company:</strong> <span th:text="${companyName}">Acme Corp</span></p>
+            <p><strong>Status:</strong> <span class="badge badge-rejected">Not Selected</span></p>
+            <p th:if="${note != null and !#strings.isEmpty(note)}">
+                <strong>Feedback:</strong> <span th:text="${note}"></span>
+            </p>
+        </div>
+        <p>
+            Don't be discouraged — there are many more opportunities waiting for you.
+            Keep applying!
+        </p>
+    </div>
+
+    <!-- CANCELLED -->
+    <div th:if="${#strings.toUpperCase(newStatus) == 'CANCELLED'}">
+        <p>
+            We're writing to let you know that your application for
+            <strong th:text="${jobTitle}">Senior Java Developer</strong> has been cancelled.
+        </p>
+        <div class="card">
+            <p><strong>Position:</strong> <span th:text="${jobTitle}">Senior Java Developer</span></p>
+            <p><strong>Status:</strong> <span class="badge badge-cancelled">Cancelled</span></p>
+            <p th:if="${note != null and !#strings.isEmpty(note)}">
+                <strong>Reason:</strong> <span th:text="${note}"></span>
+            </p>
+        </div>
+        <p>
+            This may have been due to the position being closed or filled.
+            We encourage you to explore other opportunities on the platform.
+        </p>
+    </div>
+
+    <div class="btn-center">
+        <a class="btn"
+           th:href="${frontendUrl + '/dashboard/applications/' + applicationId}">
+            View Application
+        </a>
+        &nbsp;&nbsp;
+        <a class="btn" style="background:#64748b;"
+           th:href="${frontendUrl + '/jobs'}">
+            Browse More Jobs
+        </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:13px; color:#9ca3af;">
+        You can track all your applications from your
+        <a th:href="${frontendUrl + '/dashboard/applications'}"
+           style="color:#1a56db;">applications dashboard</a>.
+    </p>
+
+</div>
+</body>
+</html>

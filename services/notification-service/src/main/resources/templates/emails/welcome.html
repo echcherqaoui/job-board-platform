@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{emails/email-layout}">
+<head><title>Welcome</title></head>
+<body>
+<div layout:fragment="content">
+
+    <p class="greeting">Welcome aboard! 🎉</p>
+
+    <p>
+        Thank you for joining <strong th:text="${appName}">Job Board Platform</strong>.
+        Your account has been created and you're all set to get started.
+    </p>
+
+    <div class="card">
+        <p>
+            <strong>Account type:</strong>
+            <span th:text="${#strings.capitalize(role)}">Job Seeker</span>
+        </p>
+    </div>
+
+    <p th:if="${role == 'job seeker'}">
+        You can now browse thousands of job listings, build your profile, and apply
+        to opportunities that match your skills.
+    </p>
+
+    <p th:if="${role == 'company'}">
+        You can now post job listings, manage applications, and find the right talent
+        for your team.
+    </p>
+
+    <div class="btn-center">
+        <a class="btn" th:href="${frontendUrl + '/dashboard'}">Go to Dashboard</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:13px; color:#9ca3af;">
+        If you didn't create this account, please ignore this email or
+        <a th:href="${frontendUrl + '/support'}" style="color:#1a56db;">contact support</a>.
+    </p>
+
+</div>
+</body>
+</html>

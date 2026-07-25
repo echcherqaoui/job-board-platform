@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{emails/email-layout}">
+<head><title>New Application Received</title></head>
+<body>
+<div layout:fragment="content">
+
+    <p class="greeting">New Application Received</p>
+
+    <p>
+        You have received a new application for one of your job postings.
+        Here are the details:
+    </p>
+
+    <div class="card">
+        <p><strong>Position:</strong> <span th:text="${jobTitle}">Senior Java Developer</span></p>
+        <p><strong>Applicant:</strong> <span th:text="${applicantName}">Khalid Echcherqaoui</span></p>
+        <p><strong>Status:</strong> <span class="badge badge-pending">Pending Review</span></p>
+    </div>
+
+    <p>
+        Log in to your dashboard to review the full application, including the
+        applicant's CV and cover letter.
+    </p>
+
+    <div class="btn-center">
+        <a class="btn"
+           th:href="${frontendUrl + '/dashboard/applications/' + applicationId}">
+            Review Application
+        </a>
+    </div>
+
+    <div class="divider"></div>
+
+    <p style="font-size:13px; color:#9ca3af;">
+        You can manage all your applications from your
+        <a th:href="${frontendUrl + '/dashboard/jobs/' + jobId + '/applications'}"
+           style="color:#1a56db;">job applications dashboard</a>.
+    </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title layout:title-pattern="$CONTENT_TITLE - Job Board">Job Board</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a56db 0%, #0d3d91 100%);
+            padding: 32px 40px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .body {
+            padding: 40px;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+        p {
+            margin-bottom: 16px;
+            color: #555;
+            font-size: 15px;
+        }
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+        .card p { margin-bottom: 8px; }
+        .card p:last-child { margin-bottom: 0; }
+        .card strong { color: #1a1a2e; }
+        .btn {
+            display: inline-block;
+            background: #1a56db;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .btn-success { background: #059669; }
+        .btn-warning { background: #d97706; }
+        .btn-center { text-align: center; margin: 28px 0; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .badge-pending  { background: #fef3c7; color: #92400e; }
+        .badge-reviewed { background: #dbeafe; color: #1e40af; }
+        .badge-accepted { background: #d1fae5; color: #065f46; }
+        .badge-rejected { background: #fee2e2; color: #991b1b; }
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 28px 0;
+        }
+        .footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 24px 40px;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+        .footer a { color: #1a56db; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <h1 th:text="${appName ?: 'Job Board Platform'}">Job Board Platform</h1>
+        <p>Connecting talent with opportunity</p>
+    </div>
+
+    <div class="body" layout:fragment="content">
+        <!-- page content here -->
+    </div>
+
+    <div class="footer">
+        <p>You received this email because you have an account on Job Board Platform.</p>
+        <p>
+            <a th:href="${frontendUrl}">Visit Platform</a>
+            &nbsp;·&nbsp;
+            <a th:href="${frontendUrl + '/settings/notifications'}">Manage Notifications</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
