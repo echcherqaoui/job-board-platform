@@ -2,7 +2,7 @@ package com.echcherqaoui.jobboard.searchservice.kafka.handler.impl;
 
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
 import com.echcherqaoui.jobboard.job.event.JobUpsertedEvent;
-import com.echcherqaoui.jobboard.searchservice.kafka.handler.JobEventHandler;
+import com.echcherqaoui.jobboard.searchservice.kafka.handler.JobHandler;
 import com.echcherqaoui.jobboard.searchservice.service.JobIndexService;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import com.google.protobuf.Message;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class JobUpsertedHandler implements JobEventHandler {
+public class JobUpsertedHandler implements JobHandler {
 
     private final JobIndexService jobIndexService;
     private final SignatureService signatureService;
