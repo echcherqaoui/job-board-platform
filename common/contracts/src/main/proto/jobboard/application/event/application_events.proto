@@ -7,18 +7,20 @@ option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
 
-
 // Emitted by Application Service when a new application is submitted.
 message ApplicationSubmittedEvent {
+  reserved 5;
+  reserved "company_name";
   string event_id = 1;
   string application_id = 2;
   string job_id = 3;
   string job_title = 4;
-  string company_name = 5;
   string applicant_id = 6;
   google.protobuf.Timestamp submitted_at = 7;
   google.protobuf.Timestamp occurred_at = 8;
   string signature = 9;
+  string recruiter_id = 10;
+  string applicant_name = 11;
 }
 
 // Emitted by Application Service when an application's status changes
@@ -42,9 +44,12 @@ message ApplicationStatusChangedEvent {
 // Emitted by Application Service when a job closure bulk-cancels all
 // PENDING applications for that job.
 message JobApplicationsCanceledEvent {
+  reserved 3;
+  reserved "affected_count";
   string event_id = 1;
   string job_id = 2;
-  int32 affected_count = 3;
   google.protobuf.Timestamp occurred_at = 4;
   string signature = 5;
+  repeated string applicant_ids = 6;
+  string job_title = 7;
 }
