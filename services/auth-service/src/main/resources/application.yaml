@@ -79,6 +79,10 @@ auth:
     refresh-token-ttl: ${REFRESH_TOKEN_TTL:7d}
     require-consent: ${REQUIRE_CONSENT:true}
     require-pkce: ${REQUIRE_PKCE:true}
+    m2m-clients:
+      - client-id: ${NOTIFICATION_CLIENT_ID}
+        client-secret: ${NOTIFICATION_SERVICE_SECRET}
+        scope: INTERNAL
 
 app:
   security:

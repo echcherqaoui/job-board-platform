@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.AUTHORIZATION_CODE;
+import static org.springframework.security.oauth2.core.AuthorizationGrantType.CLIENT_CREDENTIALS;
 import static org.springframework.security.oauth2.core.AuthorizationGrantType.REFRESH_TOKEN;
 import static org.springframework.security.oauth2.core.ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
 import static org.springframework.security.oauth2.core.oidc.OidcScopes.OPENID;
@@ -54,7 +55,29 @@ public class ClientInitializer implements CommandLineRunner {
                   .tokenSettings(tokenSettings)
                   .postLogoutRedirectUri(props.postLogoutRedirectUri())
                   .build();
+
             repository.save(client);
+        }
+
+        if (props.m2mClients().isEmpty()) return;
+
+        TokenSettings m2mTokenSettings = TokenSettings.builder()
+              .accessTokenTimeToLive(props.accessTokenTtl())
+              .build();
+
+        for (AuthServerProps.M2mClient m2m : props.m2mClients()) {
+            if (repository.findByClientId(m2m.clientId()) != null) continue;
+
+            RegisteredClient m2mClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                  .clientId(m2m.clientId())
+                  .clientSecret(encoder.encode(m2m.clientSecret()))
+                  .clientAuthenticationMethod(CLIENT_SECRET_BASIC)
+                  .authorizationGrantType(CLIENT_CREDENTIALS)
+                  .scope(m2m.scope())
+                  .tokenSettings(m2mTokenSettings)
+                  .build();
+
+            repository.save(m2mClient);
         }
     }
 }

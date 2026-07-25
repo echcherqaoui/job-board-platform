@@ -68,7 +68,9 @@ public class TokenConfig {
             if (!(principal.getPrincipal() instanceof CustomUserDetails user))
                 return;
 
-            context.getClaims().subject(user.getId());
+            context.getClaims().subject(user.getId())
+                  .claim("given_name", user.getFirstName())
+                  .claim("family_name", user.getLastName());;
 
             // Access Token: Add Authorities/Roles
             if (ACCESS_TOKEN.equals(context.getTokenType())) {
@@ -82,18 +84,12 @@ public class TokenConfig {
             }
 
             // ID Token: Add Session ID and Personal Info
-            if (ID_TOKEN.equals(context.getTokenType().getValue())) {
-                // Add Personal Info (Standard OIDC claims)
-                context.getClaims()
-                      .claim("given_name", user.getFirstName())
-                      .claim("family_name", user.getLastName());
-
-                // Handle Session ID (sid) for OIDC Logout
-                if (principal.getDetails() instanceof WebAuthenticationDetails details) {
+            if (ID_TOKEN.equals(context.getTokenType().getValue()) &&
+                  principal.getDetails() instanceof WebAuthenticationDetails details) {
+                    // Handle Session ID (sid) for OIDC Logout
                     String sessionId = details.getSessionId();
                     if (sessionId != null)
                         context.getClaims().claim("sid", sessionId);
-                }
             }
         };
     }
