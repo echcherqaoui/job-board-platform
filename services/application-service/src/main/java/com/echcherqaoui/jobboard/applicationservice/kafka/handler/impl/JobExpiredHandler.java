@@ -1,6 +1,6 @@
 package com.echcherqaoui.jobboard.applicationservice.kafka.handler.impl;
 
-import com.echcherqaoui.jobboard.applicationservice.kafka.handler.JobEventHandler;
+import com.echcherqaoui.jobboard.applicationservice.kafka.handler.JobHandler;
 import com.echcherqaoui.jobboard.applicationservice.service.ApplicationDataAccess;
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
 import com.echcherqaoui.jobboard.job.event.JobStatusChangedEvent;
@@ -16,11 +16,10 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JobExpiredHandler implements JobEventHandler {
+public class JobExpiredHandler implements JobHandler {
 
     private final ApplicationDataAccess applicationDataAccess;
     private final SignatureService signatureService;
-
 
     @Override
     public String getDescriptorFullName() {
@@ -44,7 +43,8 @@ public class JobExpiredHandler implements JobEventHandler {
             throw new EventSecurityException(event.getEventId());
 
         applicationDataAccess.bulkRejectAndExecute(
-              UUID.fromString(event.getJobId())
+              UUID.fromString(event.getJobId()),
+              event.getJobTitle()
         );
 
         log.info("Job {} closed — bulk-rejecting pending applications", event.getJobId());
