@@ -10,6 +10,8 @@ option java_multiple_files = true;
 service JobSeekerProfileService {
   rpc GetJobSeekerProfile (GetJobSeekerProfileRequest) returns (GetJobSeekerProfileResponse);
   rpc BatchGetJobSeekerProfiles (BatchGetJobSeekerProfilesRequest) returns (BatchGetJobSeekerProfilesResponse);
+  rpc GetJobSeekerEmail(GetJobSeekerEmailRequest) returns (GetJobSeekerEmailResponse);
+  rpc GetEmailsByUserIds (GetEmailsByUserIdsRequest) returns (GetEmailsByUserIdsResponse);
 }
 
 // ── Requests ─────────────────────────────────────────────────
@@ -21,6 +23,14 @@ message BatchGetJobSeekerProfilesRequest {
   repeated string user_ids = 1;
 }
 
+message GetJobSeekerEmailRequest {
+  string profile_id = 1;
+}
+
+message GetEmailsByUserIdsRequest {
+  repeated string user_ids = 1;
+}
+
 // ── Responses ────────────────────────────────────────────────
 message JobSeekerProfileSummary {
   string user_id = 1;
@@ -28,6 +38,7 @@ message JobSeekerProfileSummary {
   string last_name = 3;
   string headline = 4;
   string cv_url = 5;
+  string email = 6;
 }
 
 message BatchGetJobSeekerProfilesResponse {
@@ -48,4 +59,12 @@ message JobSeekerProfileDetail {
 
 message GetJobSeekerProfileResponse {
   JobSeekerProfileDetail profile = 1;
+}
+
+message GetJobSeekerEmailResponse {
+  string email = 1;
+}
+
+message GetEmailsByUserIdsResponse {
+  map<string, string> user_id_to_email = 1;
 }
