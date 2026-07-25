@@ -1,7 +1,7 @@
 package com.echcherqaoui.jobboard.jobservice.kafka.handler.impl;
 
 import com.echcherqaoui.jobboard.exception.core.EventSecurityException;
-import com.echcherqaoui.jobboard.jobservice.kafka.handler.CompanyEventHandler;
+import com.echcherqaoui.jobboard.jobservice.kafka.handler.UserHandler;
 import com.echcherqaoui.jobboard.jobservice.service.CompanyProfileService;
 import com.echcherqaoui.jobboard.security.service.SignatureService;
 import com.echcherqaoui.jobboard.user.event.CompanyUpsertedEvent;
@@ -16,7 +16,7 @@ import static java.time.ZoneOffset.UTC;
 
 @Component
 @RequiredArgsConstructor
-public class CompanyUpsertedHandler implements CompanyEventHandler {
+public class CompanyUpsertedHandler implements UserHandler {
 
     private final CompanyProfileService companyProfileService;
     private final SignatureService signatureService;

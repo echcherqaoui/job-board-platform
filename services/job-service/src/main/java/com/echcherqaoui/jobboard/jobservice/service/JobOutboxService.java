@@ -8,7 +8,6 @@ import java.util.List;
 public interface JobOutboxService {
     void publishJobUpserted(Job job, CompanyProfile companyProfile);
 
-
     void publishJobStatusChanged(Job job);
 
     void publishJobExpiredBatch(List<Job> jobs);
