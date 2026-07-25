@@ -35,10 +35,10 @@ public class SecurityConfig {
                     .sessionCreationPolicy(STATELESS)
               ).authorizeHttpRequests(auth ->  auth
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers(POST, appPath).hasRole("JOBSEEKER")
-                    .requestMatchers(GET, appPath + "/my").hasRole("JOBSEEKER")
+                    .requestMatchers(POST, appPath).hasRole("CANDIDATE")
+                    .requestMatchers(GET, appPath + "/my").hasRole("CANDIDATE")
                     .requestMatchers(GET, appPath + "/job/**").hasRole("RECRUITER")
-                    .requestMatchers(GET, appPath + "/**").hasAnyRole("JOBSEEKER", "RECRUITER")
+                    .requestMatchers(GET, appPath + "/**").hasAnyRole("CANDIDATE", "RECRUITER")
                     .requestMatchers(PATCH, appPath + "/**").hasRole("RECRUITER")
                     .anyRequest().authenticated()
               ).oauth2ResourceServer(oauth2 -> oauth2
