@@ -52,5 +52,15 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  mailpit:
+    image: axllent/mailpit:${MAILPIT_VERSION}
+    container_name: mailpit-job-board
+    ports:
+      - "${MAIL_PORT}:1025"
+      - "${MAILPIT_UI_PORT}:8025"
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
 volumes:
   pgadmin_data:

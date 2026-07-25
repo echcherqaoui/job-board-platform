@@ -25,6 +25,32 @@
         DEPENDENCIES
     ════════════════════════════════════════════════════════════════ -->
     <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>common-exceptions</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>contracts</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>grpc-contracts</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.echcherqaoui.jobboard</groupId>
+            <artifactId>shared-utils</artifactId>
+        </dependency>
+
         <!-- Service Discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -35,6 +61,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ── Thymeleaf (HTML email templates) ─────────────────── -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
         </dependency>
 
         <!-- MongoDB -->
@@ -49,10 +86,22 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
+        <!-- ── gRPC client  -->
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-client-spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- Email -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Client -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
         <!-- Testing -->

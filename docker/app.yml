@@ -73,6 +73,8 @@ services:
       BFF_REDIRECT_URI: ${BFF_REDIRECT_URI}
       POST_LOGOUT_REDIRECT_URI: ${POST_LOGOUT_REDIRECT_URI}
       JWT_ISSUER_URI: ${JWT_ISSUER_URI}
+      NOTIFICATION_CLIENT_ID: ${NOTIFICATION_CLIENT_ID}
+      NOTIFICATION_SERVICE_SECRET: ${NOTIFICATION_SERVICE_SECRET}
 
       # Token Settings
       ACCESS_TOKEN_TTL: ${ACCESS_TOKEN_TTL}
@@ -312,6 +314,50 @@ services:
 
     depends_on:
       postgres:
+        condition: service_healthy
+      kafka-0:
+        condition: service_healthy
+
+    networks:
+      - job-board-net
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: ../services/notification-service
+    container_name: notification-service-job-board
+    environment:
+      # Server
+      NOTIFICATION_SERVICE_PORT: ${NOTIFICATION_SERVICE_PORT}
+
+      # Discovery
+      DISCOVERY_SERVICE_URL: ${DISCOVERY_SERVICE_URL}
+
+      # Database
+      MONGODB_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/${MONGO_DB}?authSource=admin
+
+      # OAuth2 Client Config
+      NOTIFICATION_CLIENT_ID: ${NOTIFICATION_CLIENT_ID}
+      NOTIFICATION_SERVICE_SECRET: ${NOTIFICATION_SERVICE_SECRET}
+      AUTH_SERVICE_TOKEN_URI: ${AUTH_SERVICE_TOKEN_URI}
+
+      # Security
+      HMAC_SECRET_KEY: ${SECRET_KEY}
+
+      # Kafka
+      KF_BOOTSTRAP_SERVERS: ${KF_BOOTSTRAP_SERVERS}
+      SC_REGISTRY_URL: ${SC_REGISTRY_URL}
+      KF_CONSUMER_GROUP_ID: ${KF_JOB_CONSUMER_GROUP_ID}
+
+      # Mail
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+
+      # Logging
+      LOG_LEVEL_MAIL: ${LOG_LEVEL_MAIL}
+
+    depends_on:
+      mongodb:
         condition: service_healthy
       kafka-0:
         condition: service_healthy

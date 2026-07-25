@@ -1,3 +1,119 @@
+server:
+  port: ${NOTIFICATION_SERVICE_PORT}
+
+# ── gRPC ─────────────────────────────────────────────────────
+grpc:
+  # ── gRPC Clients ──────────────────────────────────────────────
+  client:
+    user-service:
+      address: 'discovery:///user-service'
+      negotiation-type: plaintext
+
+
+# ── Service Discovery ─────────────────────────────────────────
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL}
+
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: notification-service
+
+  # ── MongoDB ───────────────────────────────────────────────────
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      auto-index-creation: true
+
+  # ── Security ──────────────────────────────────────────────────
+  security:
+    oauth2:
+      client:
+        registration:
+          notification-m2m:
+            client-id: ${NOTIFICATION_CLIENT_ID}
+            client-secret: ${NOTIFICATION_SERVICE_SECRET}
+            authorization-grant-type: client_credentials
+            scope: INTERNAL
+            provider: auth-service
+        provider:
+          auth-service:
+            token-uri: ${AUTH_SERVICE_TOKEN_URI}
+
+  # ── Kafka ─────────────────────────────────────────────────────
+  kafka:
+    bootstrap-servers: ${KF_BOOTSTRAP_SERVERS}
+
+    listener:
+      concurrency: 3
+      ack-mode: manual_immediate
+
+    properties:
+      schema.registry.url: ${SC_REGISTRY_URL}
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
+
+    consumer:
+      group-id: ${KF_CONSUMER_GROUP_ID}
+      auto-offset-reset: ${KF_AUTO_OFFSET_RESET:earliest}
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+        derive.type: true
+
+  # ── Mail ──────────────────────────────────────────────────────
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: false
+
+  # ── Thymeleaf ─────────────────────────────────────────────────
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false   # set to true in production
+
+# ── Logging ─────────────────────────────────────────────────────
+logging:
+  level:
+    org.springframework.mail: ${LOG_LEVEL_MAIL}
+    com.echcherqaoui.jobboard: DEBUG
+# ── notification Config ─────────────────────────────────────────────
+
+
+kafka:
+  topics:
+    auth:
+      auth-events: jobboard.events.auth
+    application:
+      application-events: jobboard.events.application
+
+app:
+  security:
+    hmac:
+      secret: ${HMAC_SECRET_KEY}
+    grpc:
+      jwt-interceptor:
+        enabled: false
+
+notification:
+  mail:
+    from: ${MAIL_FROM:noreply@jobboard.com}
+    from-name: "Job Board Platform"
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  retry:
+    max-attempts: 5
+    delay-ms: 2000
