@@ -123,7 +123,7 @@ public class NotificationService {
         if (applicantIds == null || applicantIds.isEmpty())
             return;
 
-        String subject =  "Your application for % has been cancelled " + jobTitle;
+        String subject =  String.format("Your application for %s has been cancelled", jobTitle);
         String message = String.format("Application cancelled for job: %s", jobTitle);
 
         Map<String, Object> vars = Map.of(
