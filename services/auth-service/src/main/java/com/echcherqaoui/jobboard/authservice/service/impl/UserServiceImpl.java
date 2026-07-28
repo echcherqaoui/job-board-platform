@@ -1,6 +1,7 @@
 package com.echcherqaoui.jobboard.authservice.service.impl;
 
 import com.echcherqaoui.jobboard.authservice.dto.CreateUserRequest;
+import com.echcherqaoui.jobboard.authservice.enums.UserRole;
 import com.echcherqaoui.jobboard.authservice.exception.domain.PasswordMismatchException;
 import com.echcherqaoui.jobboard.authservice.exception.domain.UserAlreadyExistsException;
 import com.echcherqaoui.jobboard.authservice.mapper.UserMapper;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.echcherqaoui.jobboard.authservice.enums.UserRole.CANDIDATE;
+import static com.echcherqaoui.jobboard.authservice.enums.UserRole.RECRUITER;
 import static com.echcherqaoui.jobboard.authservice.exception.enums.AuthErrorCode.EMAIL_ALREADY_EXISTS;
 import static com.echcherqaoui.jobboard.authservice.exception.enums.AuthErrorCode.USERNAME_ALREADY_EXISTS;
 
@@ -43,9 +46,11 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        if (request.getRole().equals("CANDIDATE"))
+        UserRole userRole = UserRole.fromString(request.getRole());
+
+        if (userRole == CANDIDATE)
             outboxService.publishJobSeekerCreated(user);
-        else if (request.getRole().equals("RECRUITER"))
+        else if (userRole == RECRUITER)
             outboxService.publishRecruiterCreated(user);
     }
 }

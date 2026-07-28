@@ -70,7 +70,7 @@ public class TokenConfig {
 
             context.getClaims().subject(user.getId())
                   .claim("given_name", user.getFirstName())
-                  .claim("family_name", user.getLastName());;
+                  .claim("family_name", user.getLastName());
 
             // Access Token: Add Authorities/Roles
             if (ACCESS_TOKEN.equals(context.getTokenType())) {

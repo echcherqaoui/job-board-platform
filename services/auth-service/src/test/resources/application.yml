@@ -1,0 +1,41 @@
+server:
+  port: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password: sa
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+
+management:
+  server:
+    port: 0
+
+auth:
+  server:
+    client-id: test
+    client-secret: test
+    redirect-uri: http://localhost/callback
+    post-logout-redirect-uri: http://localhost/logout
+    issuer-uri: http://localhost
+    keystore-path: classpath:test-keystore.p12
+    keystore-password: test
+    key-alias: test
+    m2m-clients:
+      - client-id: test-client
+        client-secret: test-secret
+        scope: INTERNAL
+
+app:
+  security:
+    hmac:
+      secret: test-secret
