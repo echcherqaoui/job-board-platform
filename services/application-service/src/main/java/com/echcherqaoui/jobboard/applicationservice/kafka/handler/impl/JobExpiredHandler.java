@@ -46,7 +46,5 @@ public class JobExpiredHandler implements JobHandler {
               UUID.fromString(event.getJobId()),
               event.getJobTitle()
         );
-
-        log.info("Job {} closed — bulk-rejecting pending applications", event.getJobId());
     }
 }

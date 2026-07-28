@@ -229,4 +229,5 @@ public class JobServiceImpl implements JobService {
 
         log.info("Deleted job {} for company {}", jobId, currentUserId);
     }
+
 }

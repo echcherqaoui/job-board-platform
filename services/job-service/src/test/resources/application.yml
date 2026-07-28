@@ -1,0 +1,46 @@
+api:
+  base-path: /api/v1
+
+server:
+  port: 0
+
+grpc:
+  client:
+    user-service:
+      address: 'static://localhost:9090'
+      negotiation-type: plaintext
+  server:
+    port: 0
+    address: 0.0.0.0
+
+spring:
+  application:
+    name: job-service-test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/dummy
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: test-group
+
+kafka:
+  topics:
+    user:
+      company-events: test.topic
+
+app:
+  security:
+    hmac:
+      secret: test-secret-key-for-hmac-signing
