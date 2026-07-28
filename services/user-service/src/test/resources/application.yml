@@ -1,0 +1,58 @@
+server:
+  port: 0
+
+grpc:
+  server:
+    port: 0
+    address: 0.0.0.0
+
+eureka:
+  client:
+    enabled: false
+  instance:
+    prefer-ip-address: true
+
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    username: sa
+    password: sa
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: false
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9999/issuer
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    properties:
+      schema.registry.url: http://localhost:8081
+    consumer:
+      group-id: test-group
+
+kafka:
+  topics:
+    auth:
+      user-events: jobboard.events.auth
+
+app:
+  security:
+    hmac:
+      secret: test-secret-key
+
+cloudinary:
+  cloud-name: test-cloud
+  api-key: test-key
+  api-secret: test-secret

@@ -27,6 +27,8 @@ public class RecruiterRegisteredHandler implements AuthHandler {
     public void handle(Message payload) {
         RecruiterRegisteredEvent event = (RecruiterRegisteredEvent) payload;
 
+        
+
         boolean valid = signatureService.verify(
               event.getEventId(),
               event.getUserId(),
