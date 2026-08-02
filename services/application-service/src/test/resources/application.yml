@@ -1,12 +1,12 @@
+# ────── Server ──────────────────────────────────────────────
 server:
   port: 0
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-
+# ── gRPC Configuration ─────────────────────────────────────
 grpc:
+  server:
+    port: 0
+    address: 0.0.0.0
   client:
     user-service:
       address: 'static://localhost:9090'
@@ -15,27 +15,91 @@ grpc:
       address: 'static://localhost:9091'
       negotiation-type: plaintext
 
+# ── Service Discovery ─────────────────────────────────────────
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
+  application:
+    name: application-service
+
+  # ── Database (Testcontainers PostgreSQL Override) ────────────
   datasource:
-    url: jdbc:h2:mem:test
-    username: sa
-    password: sa
+    hikari:
+      pool-name: HikariPool-application-test
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # ── Database Migration (Flyway) ─────────────────────────────
+  flyway:
+    enabled: true
+    locations:
+      - classpath:db/migration
+    baseline-on-migrate: true
+    placeholders:
+      outbox_publication_name: application_outbox_publication
+
+  # ── Security & OAuth2 ─────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost
+          issuer-uri: http://localhost:9999/issuer
+
+  # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: localhost:9092
+
+    listener:
+      concurrency: 1
+      ack-mode: manual_immediate
+
     properties:
       schema.registry.url: http://localhost:8081
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+
     consumer:
       group-id: test-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+        derive.type: true
 
+# ── API & Messaging Topics ────────────────────────────────────
 api:
   base-path: /api/v1
 
+kafka:
+  topics:
+    job:
+      job-events: jobboard.events.job
+
+# ── Application Security ──────────────────────────────────────
 app:
   security:
     hmac:
-      secret: test-secret
+      secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
