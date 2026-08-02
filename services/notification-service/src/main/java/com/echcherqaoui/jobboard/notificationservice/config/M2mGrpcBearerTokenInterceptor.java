@@ -28,7 +28,6 @@ public class M2mGrpcBearerTokenInterceptor implements ClientInterceptor {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-
     /**
      * Intercepts outgoing gRPC calls to fetch and inject the M2M Bearer token into gRPC metadata.
      */

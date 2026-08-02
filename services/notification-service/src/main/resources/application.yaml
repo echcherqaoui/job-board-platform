@@ -59,6 +59,10 @@ spring:
       auto.register.schemas: false
       use.latest.version: true
 
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+
     consumer:
       group-id: ${KF_CONSUMER_GROUP_ID}
       auto-offset-reset: ${KF_AUTO_OFFSET_RESET:earliest}

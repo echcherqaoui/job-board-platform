@@ -3,9 +3,11 @@ package com.echcherqaoui.jobboard.notificationservice.service;
 import com.echcherqaoui.jobboard.notificationservice.document.Notification;
 import com.echcherqaoui.jobboard.notificationservice.projection.NotificationIdOnly;
 import com.echcherqaoui.jobboard.notificationservice.repository.NotificationRepository;
-import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoBulkWriteException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -39,7 +41,7 @@ public class NotificationOrchestrator {
 
         try {
             bulkOps.execute();
-        } catch (DuplicateKeyException ex) {
+        } catch (BulkOperationException | MongoBulkWriteException | DuplicateKeyException ex) {
             log.info("Bulk insert finished with some duplicates ignored for Job: {}", jobId);
         } catch (Exception ex) {
             log.error("Bulk insert failed unexpectedly for Job: {}", jobId, ex);

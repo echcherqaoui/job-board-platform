@@ -1,0 +1,122 @@
+# ────── Server ──────────────────────────────────────────────
+server:
+  port: 0
+
+# ── gRPC Configuration ─────────────────────────────────────
+grpc:
+  client:
+    user-service:
+      address: 'static://localhost:9090'
+      negotiation-type: plaintext
+
+# ── Service Discovery ─────────────────────────────────────────
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    prefer-ip-address: true
+
+# ── Spring Boot Core ──────────────────────────────────────────
+spring:
+  application:
+    name: notification-service
+
+  # ── MongoDB (Testcontainers Override) ─────────────────────────
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/test
+      auto-index-creation: true
+
+  # ── Security & OAuth2 ─────────────────────────────────────────
+  security:
+    oauth2:
+      client:
+        registration:
+          notification-m2m:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            authorization-grant-type: client_credentials
+            scope: INTERNAL
+            provider: auth-service
+        provider:
+          auth-service:
+            token-uri: http://localhost:9999/oauth2/token
+
+  # ── Kafka Messaging ─────────────────────────────────────────
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    listener:
+      concurrency: 1
+      ack-mode: manual_immediate
+
+    properties:
+      schema.registry.url: mock://test-registry
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+
+    consumer:
+      group-id: notification-service-test-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
+        derive.type: true
+
+  # ── Mail Configuration ────────────────────────────────────────
+  mail:
+    host: localhost
+    port: 2525
+    properties:
+      mail:
+        smtp:
+          auth: false
+
+  # ── Thymeleaf ─────────────────────────────────────────────────
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+# ── Kafka Topics ──────────────────────────────────────────────
+kafka:
+  topics:
+    auth:
+      auth-events: jobboard.events.auth
+    application:
+      application-events: jobboard.events.application
+
+# ── Application Security ──────────────────────────────────────
+app:
+  security:
+    hmac:
+      secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    grpc:
+      jwt-interceptor:
+        enabled: false
+
+# ── Notification Properties ───────────────────────────────────
+notification:
+  mail:
+    from: noreply@jobboard.com
+    from-name: "Job Board Platform"
+  retry:
+    max-attempts: 5
+    delay-ms: 2000
+
+# ── Logging ───────────────────────────────────────────────────
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    com.echcherqaoui.jobboard: DEBUG
