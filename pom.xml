@@ -52,6 +52,7 @@
         <httpclient.version>4.5.14</httpclient.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <os-plugin.version>1.7.1</os-plugin.version>
+        <greenmail-junit5.version>2.0.1</greenmail-junit5.version>
         <schema.registry.url>http://localhost:8181</schema.registry.url>
     </properties>
 
@@ -187,6 +188,22 @@
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
                 <version>${javax.version}</version>
+            </dependency>
+
+            <!-- Test container-->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.icegreen</groupId>
+                <artifactId>greenmail-junit5</artifactId>
+                <version>${greenmail-junit5.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Fixes CVE-2024-58103 -->

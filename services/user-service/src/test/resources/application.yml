@@ -1,44 +1,57 @@
+# ────── Server ──────────────────────────────────────────────
 server:
   port: 0
 
+# ── gRPC Configuration ─────────────────────────────────────
 grpc:
   server:
     port: 0
     address: 0.0.0.0
 
+# ── Service Discovery ─────────────────────────────────────────
 eureka:
   client:
     enabled: false
+    register-with-eureka: false
+    fetch-registry: false
   instance:
     prefer-ip-address: true
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
     name: user-service
 
+  # ── Database (Testcontainers PostgreSQL Override) ────────────
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
-    username: sa
-    password: sa
+    hikari:
+      pool-name: HikariPool-user-test
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
 
   jpa:
-    open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
+    show-sql: false
 
+  # ── Database Migration (Flyway) ─────────────────────────────
   flyway:
-    enabled: false
+    enabled: true
+    locations:
+      - classpath:db/migration
+    baseline-on-migrate: true
 
+  # ── Security & OAuth2 ─────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9999/issuer
 
+  # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: localhost:9092
-    properties:
-      schema.registry.url: http://localhost:8081
     consumer:
       group-id: test-group
 
@@ -47,11 +60,13 @@ kafka:
     auth:
       user-events: jobboard.events.auth
 
+# ── Application Security ──────────────────────────────────────
 app:
   security:
     hmac:
-      secret: test-secret-key
+      secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
 
+# ── Third-Party Integrations ─────────────────────────────────
 cloudinary:
   cloud-name: test-cloud
   api-key: test-key

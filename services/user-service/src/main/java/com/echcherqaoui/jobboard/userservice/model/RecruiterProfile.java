@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Setter
 @Accessors(chain = true)
 @EntityListeners(AuditingEntityListener.class)
+@ToString
 public class RecruiterProfile {
 
     @Id
