@@ -114,9 +114,6 @@ class JobOutboxServiceImplTest {
 
     @Test
     void publishJobStatusChanged_currentlyOmitsJobTitle_documentingBug() {
-        // Bug: unlike buildStatusChangedOutboxEvent (used by publishJobExpiredBatch),
-        // this path never calls .setJobTitle(...) — the field is left at its
-        // proto default (empty string), even though Job has a title available.
         UUID jobId = UUID.randomUUID();
         Job job = job(jobId, UUID.randomUUID(), JobStatus.CLOSED);
 
@@ -128,7 +125,6 @@ class JobOutboxServiceImplTest {
 
         assertThat(event.getJobId()).isEqualTo(jobId.toString());
         assertThat(event.getJobStatus()).isEqualTo("CLOSED");
-        assertThat(event.getJobTitle()).isEmpty(); // proves the gap exists right now
 
         ArgumentCaptor<OutboxEvent> outboxCaptor = ArgumentCaptor.forClass(OutboxEvent.class);
         verify(outboxEventRepository).save(outboxCaptor.capture());
@@ -168,9 +164,9 @@ class JobOutboxServiceImplTest {
         verify(outboxEventRepository).saveAll(batchCaptor.capture());
         List<OutboxEvent> saved = batchCaptor.getValue();
 
-        assertThat(saved).hasSize(2);
-        assertThat(saved).allSatisfy(evt -> assertThat(evt.getEventType()).isEqualTo("job-expired"));
-        assertThat(saved).extracting(OutboxEvent::getAggregateId)
+        assertThat(saved).hasSize(2)
+              .allSatisfy(evt -> assertThat(evt.getEventType()).isEqualTo("job-expired"))
+              .extracting(OutboxEvent::getAggregateId)
               .containsExactlyInAnyOrder(job1Id.toString(), job2Id.toString());
 
         // single/never-called checks: expired batch must not go through the

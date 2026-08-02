@@ -124,6 +124,7 @@ public class JobOutboxServiceImpl implements JobOutboxService {
         JobStatusChangedEvent proto = JobStatusChangedEvent.newBuilder()
               .setEventId(eventId)
               .setJobId(jobId)
+              .setJobTitle(job.getTitle())
               .setRecruiterId(job.getRecruiterId().toString())
               .setJobStatus(job.getStatus().name())
               .setOccurredAt(InstantConverter.toTimestamp(now))

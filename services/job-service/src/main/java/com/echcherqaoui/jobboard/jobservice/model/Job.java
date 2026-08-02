@@ -13,6 +13,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,6 +36,7 @@ import static jakarta.persistence.EnumType.STRING;
 })
 @Getter
 @Setter
+@Accessors(chain = true)
 @EntityListeners(AuditingEntityListener.class)
 public class Job {
 

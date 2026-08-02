@@ -72,9 +72,7 @@ class JobControllerTest {
     private final UUID jobId = UUID.randomUUID();
 
     private JobResponse mockJobResponse() {
-        JobResponse response = Mockito.mock(JobResponse.class);
-
-        return response;
+        return Mockito.mock(JobResponse.class);
     }
 
     private JobRequest validJobRequest() {
@@ -117,8 +115,6 @@ class JobControllerTest {
                     .content("{}"))
               .andExpect(status().isBadRequest());
     }
-
-    // ---------- GET /jobs (search) ----------
 
     @Test
     void searchJobs_returns200_withPaginatedResults() throws Exception {

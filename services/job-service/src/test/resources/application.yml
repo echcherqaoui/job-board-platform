@@ -22,9 +22,11 @@ spring:
     password: sa
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
   flyway:
-    enabled: false
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:

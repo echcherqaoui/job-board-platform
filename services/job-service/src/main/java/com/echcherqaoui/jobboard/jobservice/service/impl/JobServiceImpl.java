@@ -5,6 +5,7 @@ import com.echcherqaoui.jobboard.jobservice.dto.request.JobSearchCriteria;
 import com.echcherqaoui.jobboard.jobservice.dto.request.JobStatusUpdateRequest;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobResponse;
 import com.echcherqaoui.jobboard.jobservice.dto.response.JobSummaryResponse;
+import com.echcherqaoui.jobboard.jobservice.exception.domain.BadRequestException;
 import com.echcherqaoui.jobboard.jobservice.exception.domain.JobExpiredException;
 import com.echcherqaoui.jobboard.jobservice.exception.domain.JobNotFoundException;
 import com.echcherqaoui.jobboard.jobservice.exception.domain.UnauthorizedJobAccessException;
@@ -38,6 +39,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.echcherqaoui.jobboard.jobservice.exception.enums.JobErrorCode.COMPANY_DOES_NOT_OWN_JOB;
+import static com.echcherqaoui.jobboard.jobservice.exception.enums.JobErrorCode.INVALID_SALARY_RANGE;
 import static com.echcherqaoui.jobboard.jobservice.model.JobStatus.CLOSED;
 
 @Service
@@ -77,6 +79,10 @@ public class JobServiceImpl implements JobService {
     @Transactional
     @Override
     public JobResponse postJob(JobRequest request) {
+        if (request.salaryMin() != null && request.salaryMax() != null
+              && request.salaryMin().compareTo(request.salaryMax()) > 0)
+            throw new BadRequestException(INVALID_SALARY_RANGE, request.salaryMin(), request.salaryMax());
+
         UUID currentUserId = jwtContextHolder.getUserId();
 
         Job job = jobMapper.toJobEntity(request);
