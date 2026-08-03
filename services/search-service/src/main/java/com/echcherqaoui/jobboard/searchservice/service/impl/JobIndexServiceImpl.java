@@ -8,6 +8,7 @@ import com.echcherqaoui.jobboard.searchservice.mapper.JobMapper;
 import com.echcherqaoui.jobboard.searchservice.repository.JobDocumentRepository;
 import com.echcherqaoui.jobboard.searchservice.service.JobIndexService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +35,21 @@ public class JobIndexServiceImpl implements JobIndexService {
 
     @Override
     public void updateJobStatus(String jobId, String status) {
-        UpdateResponse<JobDocument> response = elasticsearchTemplate.execute(client ->
-              client.update(update -> update
-                          .index("jobs")
-                          .id(jobId)
-                          .doc(Map.of("status", status)),
-                    JobDocument.class
-              )
-        );
+        try {
+            UpdateResponse<JobDocument> response = elasticsearchTemplate.execute(client ->
+                  client.update(update -> update
+                              .index("jobs")
+                              .id(jobId)
+                              .doc(Map.of("status", status)),
+                        JobDocument.class
+                  )
+            );
 
-        if (response.result() == NotFound)
+            if (response.result() == NotFound)
+                throw new JobDocumentNotFoundException(jobId);
+
+        } catch (ResourceNotFoundException e) {
             throw new JobDocumentNotFoundException(jobId);
+        }
     }
 }

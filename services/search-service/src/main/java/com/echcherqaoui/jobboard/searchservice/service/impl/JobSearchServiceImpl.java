@@ -249,12 +249,12 @@ public class JobSearchServiceImpl implements JobSearchService {
         );
     }
 
-    private void applySorting(SearchRequest.Builder searchBuilder, String sortBy) {
+    private void applySorting(SearchRequest.Builder searchBuilder, String sortBy, String sortDirection) {
         // Return early if sorting by relevance and a keyword is present
         if ("relevance".equals(sortBy))
             return;
 
-        SortOrder sortOrder = "asc".equalsIgnoreCase(sortBy) ? Asc : Desc;
+        SortOrder sortOrder = "asc".equalsIgnoreCase(sortDirection) ? Asc : Desc;
 
         String sortField = switch (sortBy) {
             case "salaryMin" -> "salaryMin";
@@ -285,7 +285,7 @@ public class JobSearchServiceImpl implements JobSearchService {
                       .postTags(highlightPostTag)
                 );
 
-            applySorting(searchBuilder, searchRequest.sortBy());
+            applySorting(searchBuilder, searchRequest.sortBy(), searchRequest.sortDirection());
 
             return searchBuilder;
         });

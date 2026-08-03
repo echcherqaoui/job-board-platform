@@ -1,19 +1,9 @@
-# ────── Server ──────────────────────────────────────────────
+# ────── API & Server ──────────────────────────────────────────
+api:
+  base-path: /api/v1
+
 server:
   port: 0
-
-# ── gRPC Configuration ─────────────────────────────────────
-grpc:
-  server:
-    port: 0
-    address: 0.0.0.0
-  client:
-    user-service:
-      address: 'static://localhost:9090'
-      negotiation-type: plaintext
-    job-service:
-      address: 'static://localhost:9091'
-      negotiation-type: plaintext
 
 # ── Service Discovery ─────────────────────────────────────────
 eureka:
@@ -29,37 +19,18 @@ eureka:
 # ── Spring Boot Core ──────────────────────────────────────────
 spring:
   application:
-    name: application-service
+    name: search-service-test
 
-  # ── Database (Testcontainers PostgreSQL Override) ────────────
-  datasource:
-    hikari:
-      pool-name: HikariPool-application-test
-    url: jdbc:postgresql://localhost:5432/testdb
-    username: test
-    password: test
-
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-    show-sql: false
-
-  # ── Database Migration (Flyway) ─────────────────────────────
-  flyway:
-    enabled: true
-    locations:
-      - classpath:db/migration
-    baseline-on-migrate: true
-    placeholders:
-      outbox_publication_name: application_outbox_publication
+  # ── Elasticsearch (Testcontainers / Embedded Override) ────────
+  elasticsearch:
+    uris: http://localhost:9200
 
   # ── Security & OAuth2 ─────────────────────────────────────────
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:9999/issuer
+          issuer-uri: http://localhost:8080/dummy
 
   # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
@@ -75,10 +46,6 @@ spring:
       auto.register.schemas: false
       use.latest.version: true
 
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
-
     consumer:
       group-id: test-group
       auto-offset-reset: earliest
@@ -89,14 +56,24 @@ spring:
         spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.protobuf.KafkaProtobufDeserializer
         derive.type: true
 
-# ── API & Messaging Topics ────────────────────────────────────
-api:
-  base-path: /api/v1
+# ── Actuator Management ───────────────────────────────────────
+management:
+  server:
+    port: 0
 
+# ── Search Configuration ──────────────────────────────────────
+search:
+  default-page-size: 20
+  max-page-size: 100
+  highlight:
+    pre-tag: "<mark>"
+    post-tag: "</mark>"
+
+# ── Messaging Topics ──────────────────────────────────────────
 kafka:
   topics:
     job:
-      job-events: jobboard.events.job
+      job-events: test.topic
 
 # ── Application Security ──────────────────────────────────────
 app:
