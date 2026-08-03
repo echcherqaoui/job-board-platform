@@ -9,34 +9,29 @@ A production-grade **job board** built with a **microservices architecture** usi
 ```
                             ┌──────────────┐
                             │   Frontend   │
-                            │  (Angular)   │
                             └──────┬───────┘
-                                   │
                             ┌──────▼───────┐
-                            │  BFF Service │  ← OAuth2 Client / Session
+                            │  BFF Service │
                             └──────┬───────┘
-                                   │
                             ┌──────▼───────┐
-                            │   Gateway    │  ← JWT Resource Server
-                            │   Service    │
+                            │   Gateway    │
                             └──────┬───────┘
-                                   │
-                      ┌────────────┼────────────┐
-                      │            │            │
-               ┌──────▼──┐   ┌─────▼────┐  ┌────▼──────┐
-               │  Auth   │   │   User   │  │   Job     │
-               │ Service │   │  Service │  │  Service  │
-               └────┬────┘   └────┬─────┘  └─────┬─────┘
-                    │             │              │
-            ┌───────▼─────────────▼──────────────▼──────┐
-            │              Apache Kafka                 │
-            │  (Outbox → Debezium CDC → Schema Registry)│
-            └───────┬────────────┬──────────────┬───────┘
-                    │            │              │
-          ┌─────────▼──┐  ┌──────▼─────┐  ┌─────▼──────────┐
-          │Application │  │  Search    │  │  Notification  │
-          │  Service   │  │  Service   │  │    Service     │
-          └────────────┘  └────────────┘  └────────────────┘
+        ┌────────────┬─────────────┼──────────────┬──────────────┐
+        │            │             │              │              │
+   ┌────▼───┐  ┌─────▼────┐  ┌─────▼─────┐  ┌─────▼───────┐ ┌────▼─────┐
+   │  Auth  │  │   User   │  │    Job    │  │ Application │ │  Search  │
+   │Service │  │ Service  │  │  Service  │  │   Service   │ │ Service  │
+   └───┬────┘  └────┬─────┘  └─────┬─────┘  └──────┬──────┘ └────┬─────┘
+       │            │              │               │             │
+       └────────────┴──────────────┼───────────────┴─────────────┘
+                        ┌──────────▼──────────────┐
+                        │      Apache Kafka       │
+                        │ (Outbox → Debezium CDC) │
+                        └──────────┬──────────────┘
+                        ┌──────────▼─────────────┐
+                        │   Notification Service │
+                        │      (consumer only)   │
+                        └────────────────────────┘
 ```
 
 **Key Architectural Patterns:**
@@ -100,14 +95,14 @@ A production-grade **job board** built with a **microservices architecture** usi
 
 ### Shared Libraries (`common/`)
 
-| Module | Purpose |
-| --- | --- |
+| Module              | Purpose |
+|---------------------| --- |
 | `common-exceptions` | Standardized exception types and error responses |
-| `common-outbox` | Transactional Outbox entity & repository (shared by producers) |
-| `common-security` | JWT filters, HMAC utilities, shared security config |
-| `contracts` | Kafka Protobuf event schemas + Schema Registry Maven plugin config |
-| `grpc-contracts` | `.proto` service definitions for gRPC inter-service calls |
-| `shared-utils` | Common utilities and helpers |
+| `common-outbox`     | Transactional Outbox entity & repository (shared by producers) |
+| `common-security`   | JWT filters, HMAC utilities, shared security config |
+| `contracts`         | Kafka Protobuf event schemas + Schema Registry Maven plugin config |
+| `grpc-contracts`    | `.proto` service definitions for gRPC inter-service calls |
+| `shared-utils`      | Common utilities and helpers |
 
 ---
 
@@ -286,27 +281,15 @@ The platform uses the **Transactional Outbox** pattern for reliable event delive
 │  2. Outbox insert   │───▶│  4. Publishes to   │───▶│     and processes  │
 │     (same TX)       │    │     Kafka topic    │    │     the event      │
 └─────────────────────┘    └────────────────────┘    └────────────────────┘
+
 ```
-
-**Kafka Topics** (managed via Terraform):
-
-| Topic | Producer | Description |
-| --- | --- | --- |
-| `jobboard.events.auth` | auth-service | User registration, login events |
-| `jobboard.events.company` | user-service | Company profile events |
-| `jobboard.events.job` | job-service | Job created/updated/deleted events |
-| `jobboard.events.application` | application-service | Application submitted/status changed |
-
-Each topic has a corresponding **dead-letter topic** (`*-dlt`) and a **Debezium heartbeat topic** for connector health monitoring.
-
----
-
 ## 🔐 Authentication Flow
 
 ```
+
 ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
 │ Frontend │───▶│   BFF    │───▶│   Auth   │───▶│ Gateway  │
-│          │    │ (OAuth2  │    │ (AuthZ   │    │ (JWT     │
+│          │    │ (OAuth2  │    │ (Auth    │    │ (JWT     │
 │          │◀───│  Client) │◀───│  Server) │    │ Verify)  │
 └──────────┘    └──────────┘    └──────────┘    └──────────┘
                      │                               │
@@ -315,6 +298,8 @@ Each topic has a corresponding **dead-letter topic** (`*-dlt`) and a **Debezium 
                                                      ▼
                                                Downstream
                                                 Services
+
+
 ```
 
 1. **Frontend** redirects to BFF for login
