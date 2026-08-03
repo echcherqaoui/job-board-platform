@@ -1,41 +1,91 @@
+# ────── Server ──────────────────────────────────────────────
 server:
   port: 0
 
+# ── Service Discovery ─────────────────────────────────────────
 eureka:
   client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+# ── Spring Boot Core ──────────────────────────────────────────
 spring:
+  application:
+    name: auth-service
+
+  # ── Database (Testcontainers PostgreSQL Override) ────────────
   datasource:
-    url: jdbc:h2:mem:test
-    username: sa
-    password: sa
+    hikari:
+      pool-name: HikariPool-auth-test
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  # ── Database Migration (Flyway) ─────────────────────────────
+  flyway:
+    enabled: true
+    locations:
+      - classpath:db/migration
+    placeholders:
+      outbox_publication_name: auth_outbox_publication
+
+  # ── Kafka Messaging ─────────────────────────────────────────
   kafka:
     bootstrap-servers: localhost:9092
     properties:
       schema.registry.url: http://localhost:8081
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      use.latest.version: true
 
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializer
+
+# ── Logging ─────────────────────────────────────────────────────
+logging:
+  level:
+    org.springframework.security: WARN
+    org.springframework.security.oauth2: WARN
+
+# ── Actuator Management ─────────────────────────────────────────
 management:
   server:
     port: 0
+  endpoints:
+    web:
+      exposure:
+        include: health, info
 
+# ── Auth config ───────────────────────────────────────────────────
 auth:
   server:
-    client-id: test
-    client-secret: test
-    redirect-uri: http://localhost/callback
-    post-logout-redirect-uri: http://localhost/logout
-    issuer-uri: http://localhost
+    client-id: test-client-id
+    client-secret: test-client-secret
+    redirect-uri: http://127.0.0.1:8080/login/oauth2/code/bff
+    post-logout-redirect-uri: http://127.0.0.1:8080/logged-out
+    issuer-uri: http://localhost:9000
     keystore-path: classpath:test-keystore.p12
-    keystore-password: test
-    key-alias: test
+    keystore-password: password
+    key-alias: test-key
+    access-token-ttl: 5m
+    refresh-token-ttl: 1h
+    require-consent: false
+    require-pkce: true
     m2m-clients:
-      - client-id: test-client
-        client-secret: test-secret
+      - client-id: notification-service
+        client-secret: internal-secret
         scope: INTERNAL
 
 app:
   security:
     hmac:
-      secret: test-secret
+      secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970

@@ -18,7 +18,19 @@ public class PersistenceConfig {
 
     @Bean
     public RegisteredClientRepository clientRepository(JdbcTemplate jdbcTemplate) {
-        return new JdbcRegisteredClientRepository(jdbcTemplate);
+        JdbcRegisteredClientRepository repository = new JdbcRegisteredClientRepository(jdbcTemplate);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.registerModules(SecurityJackson2Modules.getModules(CustomUserDetails.class.getClassLoader()));
+        objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+
+        JdbcRegisteredClientRepository.RegisteredClientRowMapper rowMapper = new JdbcRegisteredClientRepository.RegisteredClientRowMapper();
+
+        rowMapper.setObjectMapper(objectMapper);
+        repository.setRegisteredClientRowMapper(rowMapper);
+
+        return repository;
     }
 
     @Bean

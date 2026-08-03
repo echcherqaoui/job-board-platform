@@ -38,8 +38,7 @@ public class SecurityConfig {
                     )
               ).exceptionHandling(ex -> ex
                     .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-              ).oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()))
-              .build();
+              ).build();
     }
 
     @Bean
